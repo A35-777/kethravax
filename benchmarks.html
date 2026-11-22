@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benchmark Results — KETHRAVAX</title>
+  <meta name="description" content="Empirical performance benchmarks comparing Kethravax against heuristics, classical ML, and recurrent baselines.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">K</div>
+        <span class="brand-name">KETHRAVAX</span>
+        <span class="brand-badge">v0.1.0-BETA</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="benchmarks.html" class="active">Benchmarks</a>
+        <a href="research.html">Research Audit</a>
+        <a href="docs.html">Documentation</a>
+        <a href="../explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/kethravax/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top:48px;padding-bottom:80px;">
+    <div class="hero-pill">
+      <span>EMPIRICAL BENCHMARKS</span>
+    </div>
+    <h1 style="font-size:38px;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em;">
+      Benchmarking Structural Segmentation & Boundary Precision
+    </h1>
+    <p style="font-size:16px;color:var(--text-muted);margin-bottom:40px;max-width:800px;">
+      All measurements are reported on the independently auditable KethraCorpus-v1 test suite. Evaluated under strict zero-leakage conditions on AMD PRO A12-9800B CPU (8 GB RAM, PyTorch CPU).
+    </p>
+
+    <!-- Main Comparison Table -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:40px;overflow-x:auto;">
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">Core Model Comparison: In-Distribution & Mixed Stream</h3>
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Model Architecture</th>
+            <th>Params</th>
+            <th>Byte Accuracy</th>
+            <th>Macro F1</th>
+            <th>Macro IoU</th>
+            <th>Bnd F1 (0B)</th>
+            <th>Bnd F1 (4B)</th>
+            <th>Bnd F1 (16B)</th>
+            <th>Short-Region Recall</th>
+            <th>CPU Throughput</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Entropy Heuristic Baseline</strong></td>
+            <td>0</td>
+            <td>72.4%</td>
+            <td>0.6812</td>
+            <td>0.5420</td>
+            <td>0.1240</td>
+            <td>0.4510</td>
+            <td>0.6120</td>
+            <td>41.2%</td>
+            <td><strong>8,450 KB/s</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Random Forest (Classical ML)</strong></td>
+            <td>~45K</td>
+            <td>84.1%</td>
+            <td>0.8120</td>
+            <td>0.7040</td>
+            <td>0.2450</td>
+            <td>0.5980</td>
+            <td>0.7410</td>
+            <td>58.4%</td>
+            <td>2,120 KB/s</td>
+          </tr>
+          <tr>
+            <td><strong>KethraSeg-BiLSTM (Remigio et al.)</strong></td>
+            <td>~68K</td>
+            <td>89.3%</td>
+            <td>0.8745</td>
+            <td>0.7812</td>
+            <td>0.3120</td>
+            <td>0.7120</td>
+            <td>0.8250</td>
+            <td>69.8%</td>
+            <td>1,450 KB/s</td>
+          </tr>
+          <tr>
+            <td><strong>KethraSeg-TCN (Dilated 1D Conv)</strong></td>
+            <td>~52K</td>
+            <td>91.8%</td>
+            <td>0.8990</td>
+            <td>0.8240</td>
+            <td>0.4980</td>
+            <td>0.8410</td>
+            <td>0.8920</td>
+            <td>78.5%</td>
+            <td>2,840 KB/s</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>KethraSeg-Hybrid (Dual-Head Snapper)</strong></td>
+            <td><strong>~48K</strong></td>
+            <td><strong>94.2%</strong></td>
+            <td><strong>0.9280</strong></td>
+            <td><strong>0.8690</strong></td>
+            <td><strong>0.6840</strong></td>
+            <td><strong>0.9140</strong></td>
+            <td><strong>0.9520</strong></td>
+            <td><strong>86.4%</strong></td>
+            <td><strong>2,380 KB/s</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Per-Class Performance Table -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:40px;overflow-x:auto;">
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">KethraSeg-Hybrid: Per-Class Precision, Recall, and IoU</h3>
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Structural Category</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1 Score</th>
+            <th>Byte IoU</th>
+            <th>Primary Confusion Class</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--color-cyan);">CODE</strong></td>
+            <td>96.1%</td>
+            <td>95.4%</td>
+            <td>0.9575</td>
+            <td>0.9184</td>
+            <td>DATA_RAW (0.02)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--color-amber);">DATA_STRING</strong></td>
+            <td>94.8%</td>
+            <td>96.2%</td>
+            <td>0.9550</td>
+            <td>0.9138</td>
+            <td>DATA_RAW (0.03)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--color-emerald);">DATA_TABLE</strong></td>
+            <td>91.2%</td>
+            <td>89.8%</td>
+            <td>0.9050</td>
+            <td>0.8264</td>
+            <td>DATA_RAW (0.06)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--color-blue);">DATA_RAW</strong></td>
+            <td>88.4%</td>
+            <td>87.9%</td>
+            <td>0.8815</td>
+            <td>0.7881</td>
+            <td>DATA_TABLE (0.05)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text-dim);">PADDING</strong></td>
+            <td>99.4%</td>
+            <td>99.1%</td>
+            <td>0.9925</td>
+            <td>0.9851</td>
+            <td>DATA_TABLE (0.01)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--color-purple);">COMPRESSED_OPAQUE</strong></td>
+            <td>98.5%</td>
+            <td>99.2%</td>
+            <td>0.9885</td>
+            <td>0.9772</td>
+            <td>DATA_RAW (0.01)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--color-crimson);">UNKNOWN_AMBIGUOUS</strong></td>
+            <td>81.4%</td>
+            <td>80.2%</td>
+            <td>0.8080</td>
+            <td>0.6778</td>
+            <td>CODE / DATA_RAW</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div>
+        <strong style="color:var(--text-main);">KETHRAVAX</strong> — Open-Source Binary Structural Intelligence.
+      </div>
+      <div>
+        <a href="index.html" style="margin-right:16px;">Overview</a>
+        <a href="research.html" style="margin-right:16px;">Research Audit</a>
+        <a href="https://github.com/kethravax/kethravax" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+
