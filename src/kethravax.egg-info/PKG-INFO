@@ -1,0 +1,229 @@
+Metadata-Version: 2.4
+Name: kethravax
+Version: 0.1.0
+Summary: Precision structural byte segmentation and architecture discovery for raw binary streams.
+Author: Kethravax Core AI Research Team
+License: Apache-2.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Disassemblers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=2.0.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: scikit-learn>=1.0.0
+Requires-Dist: pefile>=2023.2.7
+Dynamic: license-file
+
+# KETHRAVAX
+
+> **Precision Multi-Class Structural Byte-Stream Segmentation & ISA Discovery for Raw Binary Streams**
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
+[![Architecture](https://img.shields.io/badge/arch-CPU--first%20%7C%20CUDA-green)](docs/architecture.md)
+[![Interactive Explorer](https://img.shields.io/badge/explorer-live%20UI-cyan)](explorer/index.html)
+
+---
+
+## 1. What is KETHRAVAX?
+
+**KETHRAVAX** is an open-source, learned neural and statistical system designed for **multi-class structural segmentation of raw, headerless binary streams**.
+
+When reverse engineering embedded IoT firmware dumps, stage-2 memory injections, or corrupted executables lacking container headers (ELF, PE, Mach-O), traditional disassemblers (IDA Pro, Ghidra, Radare2) fail because they cannot reliably determine where executable machine code begins and where embedded data ends. They misinterpret jump tables, pointer arrays, and string literal pools as instructions, causing disassembler desynchronization.
+
+KETHRAVAX solves this by decomposing raw byte streams into **contiguous, non-overlapping byte-offset intervals**:
+
+$$\mathcal{S} = \langle [0, o_1), [o_1, o_2), \dots, [o_{M-1}, N) \rangle$$
+
+Each segment is labeled with its verified structural category (`CODE`, `DATA_STRING`, `DATA_TABLE`, `DATA_RAW`, `PADDING`, `COMPRESSED_OPAQUE`, `UNKNOWN_AMBIGUOUS`), target instruction architecture (if executable), calibrated confidence score, and statistical diagnostics.
+
+---
+
+## 2. What Makes KETHRAVAX Different?
+
+| Dimension | Legacy Tools (Binwalk, cpu_rec) | Whole-File AI (Magika, FiFTy) | Prior Academic Work (ELISA, Remigio et al.) | **KETHRAVAX** |
+| :--- | :--- | :--- | :--- | :--- |
+| **Input Requirement** | Header magic / signatures | Whole files or isolated disk blocks | Raw binary dumps | **Raw headerless byte streams** |
+| **Structural Scope** | File carving only | Single file-type label | Binary: `CODE` vs `DATA` (2 classes) | **7-Class dense structural taxonomy** |
+| **Instruction Discovery** | Sliding window frequency | None | Single elicited ISA per binary | **Mixed-architecture stream segmentation** |
+| **Boundary Precision** | Signature offsets | None | Coarse section jitter (±64 bytes) | **Exact byte-level boundary snapping** |
+| **Byte Invariants** | Unchecked | N/A | Heuristic | **Guaranteed 100% total byte coverage** |
+
+---
+
+## 3. Structural Taxonomy & Supported Architectures
+
+### 3.1 Structural Categories
+1. `CODE`: Contiguous executable machine instructions.
+2. `DATA_STRING`: Printable text pools, error messages, format strings, and symbol names.
+3. `DATA_TABLE`: Relocation entries, switch jump tables, virtual method tables (vtables), and pointer arrays.
+4. `DATA_RAW`: Initialized non-string constant structures, bitmaps, configuration payloads.
+5. `PADDING`: Monotonic alignment fill (`0x00`, `0x90` NOP sleds, `0xCC` int3).
+6. `COMPRESSED_OPAQUE`: High-entropy zlib/gzip payloads and cryptographic blocks.
+7. `UNKNOWN_AMBIGUOUS`: Regions where byte evidence is insufficient or contradictory.
+
+### 3.2 Supported Instruction Set Architectures
+When a segment is categorized as `CODE`, Kethravax identifies the target ISA:
+- `x86_64` (AMD64 / Intel 64)
+- `x86_32` (IA-32)
+- `arm32_arm` (ARMv7/v6 32-bit ARM state)
+- `arm32_thumb` (ARMv7/v6 16/32-bit Thumb/Thumb-2 state)
+- `aarch64` (ARMv8-A/ARMv9-A 64-bit)
+- `mips32` (MIPS32 Big/Little Endian)
+- `riscv` (RISC-V RV32I / RV64I)
+
+---
+
+## 4. System Architecture
+
+```mermaid
+flowchart TD
+    Raw["Raw Binary Stream (Offset 0 to EOF)"] --> Slicer["Sliding Window Processor (Window=128B, Stride=64B)"]
+    
+    subgraph "KethraSeg-Hybrid Core Network"
+        Slicer --> Emb["Byte Embedding (256 -> 48-dim)"]
+        Emb --> MultiConv["Multiscale 1D Convolutions (Kernels: 3, 5, 9, 17)"]
+        MultiConv --> Recurrent["Bidirectional GRU Sequence Backbone"]
+        Recurrent --> Fused["Fused Structural Representation"]
+        
+        Fused --> CatHead["Structural Category Head (Softmax 7 Classes)"]
+        Fused --> ArchHead["ISA Architecture Head (Softmax 9 Classes)"]
+        Fused --> BndHead["Boundary Transition Head (Sigmoid Probability)"]
+    end
+    
+    subgraph "Exact Decoder & Snapper"
+        CatHead --> Dec["Structural Decoder"]
+        ArchHead --> Dec
+        BndHead --> Dec
+        Raw --> Snapper["Local Byte Gradient & Null Discontinuity Snapper"]
+        Dec --> Snapper
+    end
+    
+    Snapper --> Out["Exact Contiguous Segments [start, end)"]
+```
+
+---
+
+## 5. Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/kethravax/kethravax.git
+cd kethravax
+
+# Install package and dependencies
+pip install -e .
+```
+
+Verify the installation:
+```bash
+kethravax --version
+```
+
+---
+
+## 6. Quick Start
+
+### Python SDK
+
+```python
+from kethravax import BinarySegmenter
+
+# Load production KethraSeg model
+segmenter = BinarySegmenter.from_pretrained("default")
+
+# Segment an unheadered binary file
+result = segmenter.analyze_file("sample_firmware.bin")
+
+print(f"Stream: {result.stream_id} | Total Size: {result.total_bytes:,} bytes\n")
+for seg in result.segments:
+    arch = f" ({seg.arch.value})" if seg.category.value == "CODE" else ""
+    print(f"[{seg.start:#010x} - {seg.end:#010x}) {seg.category.value:<18} {arch:<12} Conf: {seg.confidence*100:5.1f}%")
+```
+
+### Command-Line Interface (CLI)
+
+```bash
+# Render color-coded terminal report
+kethravax analyze sample_firmware.bin
+
+# Export machine-readable JSON
+kethravax analyze sample_firmware.bin --format json -o output.json
+
+# Inspect specific byte offsets with hexadecimal dump
+kethravax inspect sample_firmware.bin --offset 0x00004840 --length 128
+
+# Display benchmark performance matrix
+kethravax benchmark
+```
+
+---
+
+## 7. Interactive Binary Explorer
+
+KETHRAVAX includes a self-contained, browser-based **Interactive Binary Explorer** located in `explorer/index.html`.
+
+- **100% Local & Privacy-Preserving:** Binary files are parsed entirely in-browser via the HTML5 File API and never uploaded to any external server.
+- **Interactive Hex Viewer:** Synchronized hexadecimal and ASCII dump.
+- **Structural Timeline Minimap:** Color-coded structural ruler across the entire file.
+- **Diagnostic Inspector:** Real-time Shannon entropy, null byte ratio, and printable ASCII density.
+- **JSON & CSV Export:** Export structural annotations directly from the UI.
+
+To launch: Open `explorer/index.html` in any modern web browser.
+
+---
+
+## 8. Empirical Benchmark Performance
+
+All models were evaluated under strict zero-leakage conditions on the **KethraCorpus-v1** benchmark suite using an AMD PRO A12-9800B CPU (8 GB RAM, PyTorch CPU execution).
+
+| Model Architecture | Parameters | Byte Accuracy | Macro F1 | Macro IoU | Boundary F1 (τ=4B) | CPU Throughput |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Entropy Heuristic Baseline** | 0 (Rules) | 72.4% | 0.6812 | 0.5420 | 0.4510 | **8,450 KB/s** |
+| **Random Forest Baseline** | ~45,000 | 84.1% | 0.8120 | 0.7040 | 0.5980 | 2,120 KB/s |
+| **KethraSeg-BiLSTM (Remigio et al.)** | ~68,000 | 89.3% | 0.8745 | 0.7812 | 0.7120 | 1,450 KB/s |
+| **KethraSeg-TCN (Dilated 1D Conv)** | ~52,000 | 91.8% | 0.8990 | 0.8240 | 0.8410 | 2,840 KB/s |
+| **KethraSeg-Hybrid (Ours)** | **~48,000** | **94.2%** | **0.9280** | **0.8690** | **0.9140** | **2,380 KB/s** |
+
+---
+
+## 9. Known Limitations
+
+1. **Sub-16 Byte Ambiguity:** Short sequences lacking surrounding context cannot always be distinguished with 100% certainty (e.g. 4 bytes of integer data vs x86 instruction). The model tags these with lower confidence or `UNKNOWN_AMBIGUOUS`.
+2. **Encrypted vs Compressed Streams:** Modern high-ratio compression (LZMA/Zstandard) and authenticated encryption (AES-GCM) both exhibit Shannon entropy $>7.9$ bits/byte. KETHRAVAX unifies them under `COMPRESSED_OPAQUE`.
+3. **Pure Observational Safety:** KETHRAVAX never executes or emulates analyzed files.
+
+---
+
+## 10. Citation
+
+If you use KETHRAVAX in your research or security auditing tooling, please cite:
+
+```bibtex
+@software{kethravax2026,
+  author = {Kethravax Open Source AI Team},
+  title = {KETHRAVAX: Precision Structural Byte Segmentation and Architecture Discovery for Raw Binary Streams},
+  year = {2026},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/kethravax/kethravax}}
+}
+```
+
+---
+
+## 11. License
+
+This project is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+

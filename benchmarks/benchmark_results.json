@@ -1,0 +1,156 @@
+{
+  "timestamp": "2026-11-22T13:33:08Z",
+  "hardware": {
+    "processor": "AMD PRO A12-9800B R7 (4 cores)",
+    "memory": "8 GB RAM",
+    "device": "CPU-only",
+    "pytorch_version": "2.13.0+cpu"
+  },
+  "models": {
+    "EntropyHeuristicBaseline": {
+      "in_distribution": {
+        "overall_byte_accuracy": 0.2388,
+        "macro_f1": 0.4417,
+        "macro_iou": 0.414,
+        "arch_accuracy_on_code": 0.25,
+        "boundary_f1_tol_0B": 0.0094,
+        "boundary_f1_tol_4B": 0.0772,
+        "boundary_f1_tol_16B": 0.1951,
+        "boundary_f1_tol_32B": 0.3015,
+        "short_region_recall": 1.0,
+        "cpu_throughput_kb_s": 393.2,
+        "total_test_bytes": 73728
+      },
+      "unseen_mixed": {
+        "overall_byte_accuracy": 0.1871,
+        "macro_f1": 0.3206,
+        "macro_iou": 0.3001,
+        "arch_accuracy_on_code": 0.0,
+        "boundary_f1_tol_0B": 0.0513,
+        "boundary_f1_tol_4B": 0.1538,
+        "boundary_f1_tol_16B": 0.359,
+        "boundary_f1_tol_32B": 0.5451,
+        "short_region_recall": 0.0,
+        "cpu_throughput_kb_s": 386.01,
+        "total_test_bytes": 12288
+      },
+      "parameter_count": 0
+    },
+    "ClassicalMLBaseline_RF": {
+      "in_distribution": {
+        "overall_byte_accuracy": 0.683,
+        "macro_f1": 0.6019,
+        "macro_iou": 0.5663,
+        "arch_accuracy_on_code": 0.5,
+        "boundary_f1_tol_0B": 0.0161,
+        "boundary_f1_tol_4B": 0.0994,
+        "boundary_f1_tol_16B": 0.246,
+        "boundary_f1_tol_32B": 0.3519,
+        "short_region_recall": 1.0,
+        "cpu_throughput_kb_s": 0.86,
+        "total_test_bytes": 73728
+      },
+      "unseen_mixed": {
+        "overall_byte_accuracy": 0.6815,
+        "macro_f1": 0.713,
+        "macro_iou": 0.6445,
+        "arch_accuracy_on_code": 0.2457,
+        "boundary_f1_tol_0B": 0.0645,
+        "boundary_f1_tol_4B": 0.129,
+        "boundary_f1_tol_16B": 0.4081,
+        "boundary_f1_tol_32B": 0.6797,
+        "short_region_recall": 0.0,
+        "cpu_throughput_kb_s": 0.91,
+        "total_test_bytes": 12288
+      },
+      "parameter_count": 45000
+    },
+    "KethraSeg_BiLSTM": {
+      "in_distribution": {
+        "overall_byte_accuracy": 0.6406,
+        "macro_f1": 0.478,
+        "macro_iou": 0.4306,
+        "arch_accuracy_on_code": 0.5499,
+        "boundary_f1_tol_0B": 0.0594,
+        "boundary_f1_tol_4B": 0.1178,
+        "boundary_f1_tol_16B": 0.2928,
+        "boundary_f1_tol_32B": 0.3694,
+        "short_region_recall": 0.75,
+        "cpu_throughput_kb_s": 13.4,
+        "total_test_bytes": 73728
+      },
+      "unseen_mixed": {
+        "overall_byte_accuracy": 0.6537,
+        "macro_f1": 0.5596,
+        "macro_iou": 0.4829,
+        "arch_accuracy_on_code": 0.835,
+        "boundary_f1_tol_0B": 0.0988,
+        "boundary_f1_tol_4B": 0.2326,
+        "boundary_f1_tol_16B": 0.3475,
+        "boundary_f1_tol_32B": 0.4599,
+        "short_region_recall": 0.5,
+        "cpu_throughput_kb_s": 13.88,
+        "total_test_bytes": 12288
+      },
+      "parameter_count": 118433
+    },
+    "KethraSeg_TCN": {
+      "in_distribution": {
+        "overall_byte_accuracy": 0.667,
+        "macro_f1": 0.4888,
+        "macro_iou": 0.4445,
+        "arch_accuracy_on_code": 0.5,
+        "boundary_f1_tol_0B": 0.0821,
+        "boundary_f1_tol_4B": 0.1388,
+        "boundary_f1_tol_16B": 0.2485,
+        "boundary_f1_tol_32B": 0.3014,
+        "short_region_recall": 1.0,
+        "cpu_throughput_kb_s": 19.09,
+        "total_test_bytes": 73728
+      },
+      "unseen_mixed": {
+        "overall_byte_accuracy": 0.6364,
+        "macro_f1": 0.5647,
+        "macro_iou": 0.4953,
+        "arch_accuracy_on_code": 0.8871,
+        "boundary_f1_tol_0B": 0.098,
+        "boundary_f1_tol_4B": 0.1958,
+        "boundary_f1_tol_16B": 0.3464,
+        "boundary_f1_tol_32B": 0.4198,
+        "short_region_recall": 0.5,
+        "cpu_throughput_kb_s": 17.21,
+        "total_test_bytes": 12288
+      },
+      "parameter_count": 134633
+    },
+    "KethraSeg_Hybrid": {
+      "in_distribution": {
+        "overall_byte_accuracy": 0.7136,
+        "macro_f1": 0.5305,
+        "macro_iou": 0.4927,
+        "arch_accuracy_on_code": 0.5194,
+        "boundary_f1_tol_0B": 0.149,
+        "boundary_f1_tol_4B": 0.1555,
+        "boundary_f1_tol_16B": 0.2355,
+        "boundary_f1_tol_32B": 0.2741,
+        "short_region_recall": 1.0,
+        "cpu_throughput_kb_s": 15.39,
+        "total_test_bytes": 73728
+      },
+      "unseen_mixed": {
+        "overall_byte_accuracy": 0.7028,
+        "macro_f1": 0.662,
+        "macro_iou": 0.6063,
+        "arch_accuracy_on_code": 0.7367,
+        "boundary_f1_tol_0B": 0.0943,
+        "boundary_f1_tol_4B": 0.2952,
+        "boundary_f1_tol_16B": 0.4628,
+        "boundary_f1_tol_32B": 0.5016,
+        "short_region_recall": 0.5,
+        "cpu_throughput_kb_s": 14.5,
+        "total_test_bytes": 12288
+      },
+      "parameter_count": 69749
+    }
+  }
+}

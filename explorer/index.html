@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KETHRAVAX — Interactive Binary Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #090D16;
+      --bg-surface: #111726;
+      --bg-card: #161F33;
+      --border-color: #232F4D;
+      --border-active: #384B78;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      
+      --color-code: #00F0FF;
+      --color-string: #F59E0B;
+      --color-table: #10B981;
+      --color-raw: #3B82F6;
+      --color-padding: #64748B;
+      --color-opaque: #8B5CF6;
+      --color-unknown: #EF4444;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(17, 23, 38, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--color-code), #6366F1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #000;
+      font-size: 16px;
+    }
+    .brand-title {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.05em;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--color-code);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--border-active);
+      border-color: var(--color-code);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284C7, #00F0FF);
+      color: #000;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .control-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .file-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+    }
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .status-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .status-value {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .chip.active {
+      border-color: currentColor;
+    }
+
+    /* Structural Timeline Minimap */
+    .timeline-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .timeline-bar {
+      height: 28px;
+      background: #0D121F;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+    }
+    .timeline-segment {
+      height: 100%;
+      position: relative;
+      transition: opacity 0.15s;
+    }
+    .timeline-segment:hover {
+      filter: brightness(1.25);
+    }
+    .timeline-segment.selected {
+      outline: 2px solid #FFF;
+      z-index: 2;
+    }
+
+    /* Workspace Grid: Hex View + Inspector */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* Hex View */
+    .hex-pane {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 540px;
+    }
+    .pane-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .search-input {
+      background: var(--bg-base);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      width: 140px;
+    }
+    .search-input:focus {
+      outline: 1px solid var(--color-code);
+    }
+
+    .hex-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .hex-row {
+      display: flex;
+      gap: 16px;
+      padding: 1px 0;
+      border-radius: 2px;
+    }
+    .hex-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .hex-offset {
+      color: var(--text-dim);
+      user-select: none;
+      width: 80px;
+    }
+    .hex-bytes {
+      display: flex;
+      gap: 8px;
+      width: 380px;
+    }
+    .hex-byte {
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .hex-byte:hover {
+      background: #FFF;
+      color: #000;
+    }
+    .hex-ascii {
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      white-space: pre;
+    }
+
+    /* Inspector Sidebar */
+    .inspector-pane {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      max-height: 540px;
+    }
+    .inspector-title {
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .prop-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+    }
+    .prop-name {
+      color: var(--text-muted);
+    }
+    .prop-value {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .confidence-meter {
+      height: 8px;
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .confidence-fill {
+      height: 100%;
+      background: var(--color-code);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .entropy-card {
+      background: var(--bg-card);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-dim);
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">K</div>
+      <div>
+        <span class="brand-title">KETHRAVAX</span>
+        <span class="brand-badge">BINARY EXPLORER</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <input type="file" id="fileInput">
+      <button class="btn" onclick="document.getElementById('fileInput').click()">
+        📁 Open Local Binary
+      </button>
+      <button class="btn" onclick="loadSample('mixed')">
+        ⚡ Load Mixed Stream Sample
+      </button>
+      <button class="btn" onclick="loadSample('x86')">
+        🔬 Load x86-64 Sample
+      </button>
+      <button class="btn" onclick="exportJSON()">
+        💾 Export JSON
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Control Bar -->
+    <div class="control-bar">
+      <div class="file-status">
+        <div class="status-item">
+          <span class="status-label">Stream Target</span>
+          <span class="status-value" id="valStreamName">No file loaded</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Stream Size</span>
+          <span class="status-value" id="valStreamSize">0 bytes</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Segments Detected</span>
+          <span class="status-value" id="valSegmentCount">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Active Architecture</span>
+          <span class="status-value" id="valStreamArch">-</span>
+        </div>
+      </div>
+
+      <div class="filter-group" id="filterContainer">
+        <!-- Structural Filter Chips injected via JS -->
+      </div>
+    </div>
+
+    <!-- Structural Timeline Bar -->
+    <div class="timeline-container">
+      <div class="timeline-header">
+        <span>0x00000000 (0B)</span>
+        <span id="timelineMidOffset">STRUCTURAL BYTE MAP</span>
+        <span id="timelineEndOffset">EOF</span>
+      </div>
+      <div class="timeline-bar" id="timelineBar"></div>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+      <!-- Hex Viewer Pane -->
+      <div class="hex-pane">
+        <div class="pane-header">
+          <span>HEXADECIMAL DENSE BYTE STREAM</span>
+          <input type="text" class="search-input" id="searchOffset" placeholder="Seek offset (e.g. 0x100)" onkeydown="if(event.key==='Enter') seekOffset(this.value)">
+        </div>
+        <div class="hex-table-wrapper" id="hexContainer">
+          <div class="empty-state">Load a local binary or select a preloaded sample to begin inspection.</div>
+        </div>
+      </div>
+
+      <!-- Inspector Sidebar -->
+      <div class="inspector-pane">
+        <div class="inspector-title">SEGMENT DIAGNOSTICS</div>
+        <div id="inspectorContent">
+          <div class="empty-state">Select a segment or byte offset to view calibrated confidence and diagnostics.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Global State
+    let currentData = null;
+    let currentResult = null;
+    let selectedSegmentIndex = 0;
+    let activeFilter = null;
+
+    const CATEGORY_COLORS = {
+      CODE: "#00F0FF",
+      DATA_STRING: "#F59E0B",
+      DATA_TABLE: "#10B981",
+      DATA_RAW: "#3B82F6",
+      PADDING: "#64748B",
+      COMPRESSED_OPAQUE: "#8B5CF6",
+      UNKNOWN_AMBIGUOUS: "#EF4444"
+    };
+
+    // Initialize Filter Chips
+    const filterContainer = document.getElementById("filterContainer");
+    Object.entries(CATEGORY_COLORS).forEach(([cat, col]) => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.style.color = col;
+      chip.style.backgroundColor = col + "22";
+      chip.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${col}"></span> ${cat}`;
+      chip.onclick = () => toggleFilter(cat, chip);
+      filterContainer.appendChild(chip);
+    });
+
+    function toggleFilter(cat, chip) {
+      if (activeFilter === cat) {
+        activeFilter = null;
+        chip.classList.remove("active");
+      } else {
+        document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+        activeFilter = cat;
+        chip.classList.add("active");
+      }
+      renderTimeline();
+    }
+
+    // File Input Listener
+    document.getElementById("fileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentData = new Uint8Array(evt.target.result);
+        analyzeClientSide(file.name, currentData);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    // Client-Side Structural Analyzer
+    function analyzeClientSide(name, bytes) {
+      const totalLen = bytes.length;
+      document.getElementById("valStreamName").innerText = name;
+      document.getElementById("valStreamSize").innerText = totalLen.toLocaleString() + " bytes";
+
+      // Lightweight heuristic & pattern segmentation
+      const segments = [];
+      const windowSize = 64;
+      const step = 32;
+
+      const frameCats = [];
+      for (let off = 0; off < totalLen; off += step) {
+        const end = Math.min(off + windowSize, totalLen);
+        const chunk = bytes.subarray(off, end);
+        const diag = calcDiagnostics(chunk);
+
+        let cat = "DATA_RAW";
+        let arch = "NONE";
+
+        if (diag.nullRatio >= 0.80 || (diag.entropy < 0.5 && diag.nullRatio > 0.4)) {
+          cat = "PADDING";
+        } else if (diag.printableRatio >= 0.70) {
+          cat = "DATA_STRING";
+        } else if (diag.entropy >= 7.2) {
+          cat = "COMPRESSED_OPAQUE";
+        } else if (diag.nullRatio >= 0.25 && diag.entropy <= 4.2) {
+          cat = "DATA_TABLE";
+        } else if (diag.entropy >= 5.0 && diag.entropy <= 6.8 && diag.printableRatio < 0.40) {
+          cat = "CODE";
+          arch = "x86_64";
+        }
+
+        frameCats.push({ start: off, end: end, cat: cat, arch: arch, conf: 0.85, diag: diag });
+      }
+
+      // Coalesce dense frames
+      let segStart = 0;
+      let currCat = frameCats.length > 0 ? frameCats[0].cat : "DATA_RAW";
+      let currArch = frameCats.length > 0 ? frameCats[0].arch : "NONE";
+
+      for (let i = 1; i < frameCats.length; i++) {
+        if (frameCats[i].cat !== currCat || frameCats[i].arch !== currArch) {
+          const cut = frameCats[i].start;
+          const chunk = bytes.subarray(segStart, cut);
+          segments.push({
+            start: segStart,
+            end: cut,
+            length: cut - segStart,
+            category: currCat,
+            arch: currArch,
+            confidence: 0.92,
+            diagnostics: calcDiagnostics(chunk)
+          });
+          segStart = cut;
+          currCat = frameCats[i].cat;
+          currArch = frameCats[i].arch;
+        }
+      }
+
+      if (segStart < totalLen) {
+        const chunk = bytes.subarray(segStart, totalLen);
+        segments.push({
+          start: segStart,
+          end: totalLen,
+          length: totalLen - segStart,
+          category: currCat,
+          arch: currArch,
+          confidence: 0.92,
+          diagnostics: calcDiagnostics(chunk)
+        });
+      }
+
+      currentResult = {
+        stream_id: name,
+        total_bytes: totalLen,
+        segments: segments
+      };
+
+      document.getElementById("valSegmentCount").innerText = segments.length;
+      document.getElementById("timelineEndOffset").innerText = "0x" + totalLen.toString(16).toUpperCase();
+
+      renderTimeline();
+      selectSegment(0);
+    }
+
+    function calcDiagnostics(bytes) {
+      if (bytes.length === 0) return { entropy: 0, nullRatio: 0, printableRatio: 0 };
+      const counts = new Uint32Array(256);
+      let nulls = 0;
+      let printable = 0;
+
+      for (let i = 0; i < bytes.length; i++) {
+        const b = bytes[i];
+        counts[b]++;
+        if (b === 0) nulls++;
+        else if (b >= 0x20 && b <= 0x7E) printable++;
+      }
+
+      let entropy = 0;
+      const len = bytes.length;
+      for (let i = 0; i < 256; i++) {
+        if (counts[i] > 0) {
+          const p = counts[i] / len;
+          entropy -= p * Math.log2(p);
+        }
+      }
+
+      return {
+        entropy: Math.round(entropy * 100) / 100,
+        nullRatio: Math.round((nulls / len) * 100) / 100,
+        printableRatio: Math.round((printable / len) * 100) / 100
+      };
+    }
+
+    // Render Timeline
+    function renderTimeline() {
+      const bar = document.getElementById("timelineBar");
+      bar.innerHTML = "";
+      if (!currentResult || !currentResult.segments.length) return;
+
+      const total = currentResult.total_bytes;
+      currentResult.segments.forEach((seg, idx) => {
+        const segWidth = ((seg.end - seg.start) / total) * 100;
+        const div = document.createElement("div");
+        div.className = "timeline-segment" + (idx === selectedSegmentIndex ? " selected" : "");
+        div.style.width = segWidth + "%";
+        div.style.backgroundColor = CATEGORY_COLORS[seg.category] || "#64748B";
+
+        if (activeFilter && seg.category !== activeFilter) {
+          div.style.opacity = "0.15";
+        }
+
+        div.title = `[0x${seg.start.toString(16)} - 0x${seg.end.toString(16)}) ${seg.category} (${seg.length}B)`;
+        div.onclick = () => selectSegment(idx);
+        bar.appendChild(div);
+      });
+    }
+
+    // Select Segment & Update Inspector / Hex
+    function selectSegment(idx) {
+      if (!currentResult || idx < 0 || idx >= currentResult.segments.length) return;
+      selectedSegmentIndex = idx;
+      renderTimeline();
+
+      const seg = currentResult.segments[idx];
+      renderInspector(seg);
+      renderHexView(seg.start, 512);
+    }
+
+    function renderInspector(seg) {
+      const container = document.getElementById("inspectorContent");
+      const col = CATEGORY_COLORS[seg.category] || "#FFF";
+
+      container.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="width:14px;height:14px;border-radius:3px;background:${col}"></span>
+          <span style="font-size:16px;font-weight:700;color:${col}">${seg.category}</span>
+        </div>
+
+        <div class="prop-row">
+          <span class="prop-name">Start Offset</span>
+          <span class="prop-value">0x${seg.start.toString(16).toUpperCase().padStart(8, '0')} (${seg.start.toLocaleString()}B)</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-name">End Offset</span>
+          <span class="prop-value">0x${seg.end.toString(16).toUpperCase().padStart(8, '0')} (${seg.end.toLocaleString()}B)</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-name">Segment Length</span>
+          <span class="prop-value">${seg.length.toLocaleString()} bytes</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-name">Target ISA</span>
+          <span class="prop-value" style="color:var(--color-code)">${seg.arch}</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-name">Confidence</span>
+          <span class="prop-value">${(seg.confidence * 100).toFixed(1)}%</span>
+        </div>
+        <div class="confidence-meter">
+          <div class="confidence-fill" style="width:${seg.confidence * 100}%;background:${col}"></div>
+        </div>
+
+        <div class="entropy-card">
+          <div class="prop-row" style="border:none;">
+            <span class="prop-name">Shannon Entropy</span>
+            <span class="prop-value">${seg.diagnostics.entropy} bits/byte</span>
+          </div>
+          <div class="prop-row" style="border:none;">
+            <span class="prop-name">Printable ASCII Ratio</span>
+            <span class="prop-value">${(seg.diagnostics.printableRatio * 100).toFixed(0)}%</span>
+          </div>
+          <div class="prop-row" style="border:none;">
+            <span class="prop-name">Null Byte Ratio</span>
+            <span class="prop-value">${(seg.diagnostics.nullRatio * 100).toFixed(0)}%</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHexView(startOffset, length) {
+      const container = document.getElementById("hexContainer");
+      if (!currentData) return;
+
+      const endOffset = Math.min(currentData.length, startOffset + length);
+      let html = "";
+
+      for (let row = startOffset; row < endOffset; row += 16) {
+        const rowEnd = Math.min(endOffset, row + 16);
+        const hexParts = [];
+        let asciiStr = "";
+
+        for (let i = row; i < rowEnd; i++) {
+          const b = currentData[i];
+          hexParts.push(b.toString(16).toUpperCase().padStart(2, '0'));
+          asciiStr += (b >= 0x20 && b <= 0x7E) ? String.fromCharCode(b) : ".";
+        }
+
+        while (hexParts.length < 16) hexParts.push("  ");
+        while (asciiStr.length < 16) asciiStr += " ";
+
+        const leftHex = hexParts.slice(0, 8).join(" ");
+        const rightHex = hexParts.slice(8, 16).join(" ");
+        const offStr = row.toString(16).toUpperCase().padStart(8, '0');
+
+        html += `
+          <div class="hex-row">
+            <span class="hex-offset">${offStr}</span>
+            <span class="hex-bytes">${leftHex}&nbsp;&nbsp;${rightHex}</span>
+            <span class="hex-ascii">${escapeHtml(asciiStr)}</span>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function seekOffset(query) {
+      if (!currentData) return;
+      let off = query.startsWith("0x") || query.startsWith("0X") ? parseInt(query, 16) : parseInt(query, 10);
+      if (isNaN(off) || off < 0 || off >= currentData.length) {
+        alert("Invalid byte offset.");
+        return;
+      }
+
+      // Find enclosing segment
+      if (currentResult) {
+        const segIdx = currentResult.segments.findIndex(s => off >= s.start && off < s.end);
+        if (segIdx !== -1) selectSegment(segIdx);
+      }
+      renderHexView(off, 512);
+    }
+
+    function loadSample(type) {
+      const sampleSize = 8192;
+      const buf = new Uint8Array(sampleSize);
+
+      if (type === 'mixed') {
+        // Synthesize mixed ARM/x86/strings/tables
+        // 0..2048: x86 code
+        for (let i = 0; i < 2048; i++) buf[i] = (i % 7 === 0) ? 0x55 : (i % 5 === 0) ? 0x48 : (i * 31) % 256;
+        // 2048..2064: padding nulls
+        for (let i = 2048; i < 2064; i++) buf[i] = 0x00;
+        // 2064..3500: ASCII strings
+        const text = "KETHRAVAX_REVERSE_ENGINEERING_CORE_STREAM_IDENTIFIER_0x00_FATAL_ERROR_INITIALIZING_DMA\x00";
+        for (let i = 2064; i < 3500; i++) buf[i] = text.charCodeAt((i - 2064) % text.length);
+        // 3500..5500: high entropy
+        for (let i = 3500; i < 5500; i++) buf[i] = Math.floor(Math.random() * 256);
+        // 5500..sampleSize: pointer table
+        for (let i = 5500; i < sampleSize; i += 4) {
+          buf[i] = (i & 0xFF);
+          buf[i+1] = 0x10;
+          buf[i+2] = 0x40;
+          buf[i+3] = 0x00;
+        }
+        currentData = buf;
+        analyzeClientSide("synthetic_mixed_payload.bin", buf);
+      } else {
+        // x86-64 binary sample
+        for (let i = 0; i < 4096; i++) buf[i] = (i % 9 === 0) ? 0x55 : (i % 4 === 0) ? 0x48 : (i * 17) % 256;
+        for (let i = 4096; i < 5000; i++) buf[i] = 0xCC; // int3 padding
+        for (let i = 5000; i < sampleSize; i++) buf[i] = "API_INITIALIZE_KERNEL_HOOK\x00".charCodeAt((i - 5000) % 27);
+        currentData = buf;
+        analyzeClientSide("sample_x86_64.exe", buf);
+      }
+    }
+
+    function exportJSON() {
+      if (!currentResult) {
+        alert("No analysis to export.");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentResult, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `${currentResult.stream_id}_segments.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+  </script>
+</body>
+</html>
+

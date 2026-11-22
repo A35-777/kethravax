@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Audit & Related Work — KETHRAVAX</title>
+  <meta name="description" content="Academic prior art audit and theoretical formulation of multi-class structural byte stream segmentation.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">K</div>
+        <span class="brand-name">KETHRAVAX</span>
+        <span class="brand-badge">v0.1.0-BETA</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="research.html" class="active">Research Audit</a>
+        <a href="docs.html">Documentation</a>
+        <a href="../explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/kethravax/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top:48px;padding-bottom:80px;max-width:960px;">
+    <div class="hero-pill">
+      <span>ACADEMIC FOUNDATIONS</span>
+    </div>
+    <h1 style="font-size:38px;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em;">
+      Prior-Work Audit & Scientific Gap Analysis
+    </h1>
+    <p style="font-size:16px;color:var(--text-muted);margin-bottom:40px;line-height:1.6;">
+      KETHRAVAX does not operate in a vacuum. The code/data separation problem has over a decade of established academic research. This audit maps existing milestones and demonstrates the unaddressed capability gap solved by KETHRAVAX.
+    </p>
+
+    <!-- Section 1: ELISA & Remigio -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:32px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--color-cyan);">
+        1. From Linear-Chain CRFs (ELISA) to Recurrent Models (Remigio et al.)
+      </h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:14px;line-height:1.6;">
+        <strong>ELISA (Polino et al.):</strong> Formulated fine-grained code/data separation as sequential tagging using Linear-Chain Conditional Random Fields (CRFs) paired with logistic regression for ISA elicitation. While statistically sound, the CRF inference penalty ($O(T \cdot |Y|^2)$) and fragility on packed binaries limited its scalability.
+      </p>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:14px;line-height:1.6;">
+        <strong>Remigio et al. (IWSEC 2023):</strong> <em>"The Good, the Bad, and the Binary: An LSTM-Based Method for Section Boundary Detection in Firmware Analysis."</em> Replaced ELISA's hand-crafted CRF with a Bidirectional LSTM network and entropy-based packed architecture classification, demonstrating superior recovery of macro section boundaries on IoT firmware images.
+      </p>
+      <p style="color:var(--text-muted);font-size:15px;line-height:1.6;">
+        <strong>The Remaining Gap:</strong> Both systems strictly tackled a <strong>2-class binary distinction</strong> (<code>CODE</code> vs <code>DATA</code>) at the macroscopic section level, suffering from boundary localization smearing (±64 bytes) and inability to segment internal structures like jump tables, string literal pools, or alignment padding.
+      </p>
+    </div>
+
+    <!-- Section 2: Fixed-Block & Whole-File Tools -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:32px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--color-emerald);">
+        2. Whole-File & Block-Level Classifiers: Magika, FiFTy, and cpu_rec
+      </h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:14px;line-height:1.6;">
+        <strong>Magika (Google 2024):</strong> A highly optimized 1D CNN for fast content-type identification. Crucially, Magika is a <em>whole-file classifier</em>; it assigns one file-type label to an entire file. It cannot segment contiguous sub-regions within a heterogeneous stream.
+      </p>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:14px;line-height:1.6;">
+        <strong>FiFTy (Mittal et al.):</strong> Compact CNN classifying isolated 512B or 4KB disk sectors across 75 file types. Lacks continuous sequence modeling and boundary localization.
+      </p>
+      <p style="color:var(--text-muted);font-size:15px;line-height:1.6;">
+        <strong>cpu_rec (Airbus Seclab):</strong> Statistical n-gram frequency corpus matching. Highly effective over large sliding windows (4KB–64KB) for identifying CPU architectures, but completely blind to non-executable data structures and fine-grained transitions.
+      </p>
+    </div>
+
+    <!-- Section 3: The Kethravax Synthesis -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:32px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--color-purple);">
+        3. The KETHRAVAX Unified Formulation
+      </h3>
+      <p style="color:var(--text-muted);font-size:15px;line-height:1.6;">
+        KETHRAVAX unifies these fragmented capabilities:
+        <br><br>
+        1. <strong>Dense Multi-Class Taxonomy:</strong> Replaces binary code/data with 7 verifiable structural classes (Code, Strings, Jump Tables, Raw Data, Padding, Opaque, Ambiguous).
+        <br>
+        2. <strong>Mixed-ISA Stream Support:</strong> Decouples the structural category from the ISA label, enabling detection of architecture changes (e.g. ARM32 to Thumb-2) in a single stream.
+        <br>
+        3. <strong>Exact Byte Snapping:</strong> Dual-head neural modeling paired with local gradient/null-discontinuity snapping guarantees exact byte offset boundaries.
+      </p>
+    </div>
+
+    <!-- Primary References -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:10px;padding:24px;">
+      <h4 style="font-size:16px;font-weight:700;margin-bottom:12px;">Key Literature References</h4>
+      <ol style="font-size:13px;color:var(--text-muted);padding-left:20px;line-height:1.8;font-family:var(--font-mono);">
+        <li>Polino et al. "ELISA: Eliciting ISA of Raw Binaries for Fine-Grained Code and Data Separation." 2021.</li>
+        <li>Remigio, Bertani, Polino, Carminati, Zanero. "The Good, the Bad, and the Binary: An LSTM-Based Method for Section Boundary Detection in Firmware Analysis." IWSEC 2023.</li>
+        <li>Fratantonio et al. "Magika: AI-Powered Fast and Accurate File-Type Identification." Google Research, 2024.</li>
+        <li>Mittal, Korus, Memon. "FiFTy: Large-scale File Fragment Type Identification using CNNs." IEEE TIFS, 2021.</li>
+        <li>Vivet. "cpu_rec: Identification of CPU Architecture for Arbitrary Binary Files." Airbus CERT, 2020.</li>
+        <li>Pei, Hamm, Ray, Jana. "XDA: Accurate, Robust Disassembly with Transfer Learning." NDSS 2022.</li>
+      </ol>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div>
+        <strong style="color:var(--text-main);">KETHRAVAX</strong> — Open-Source Binary Structural Intelligence.
+      </div>
+      <div>
+        <a href="index.html" style="margin-right:16px;">Overview</a>
+        <a href="benchmarks.html" style="margin-right:16px;">Benchmarks</a>
+        <a href="https://github.com/kethravax/kethravax" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+

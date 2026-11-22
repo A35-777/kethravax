@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works — KETHRAVAX</title>
+  <meta name="description" content="Technical mechanics of learned multi-class structural byte-stream segmentation and architecture discovery.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">K</div>
+        <span class="brand-name">KETHRAVAX</span>
+        <span class="brand-badge">v0.1.0-BETA</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="how-it-works.html" class="active">How It Works</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="research.html">Research Audit</a>
+        <a href="docs.html">Documentation</a>
+        <a href="../explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/kethravax/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top:48px;padding-bottom:80px;max-width:960px;">
+    <div class="hero-pill">
+      <span>TECHNICAL DEEP-DIVE</span>
+    </div>
+    <h1 style="font-size:38px;font-weight:800;margin-bottom:20px;letter-spacing:-0.02em;">
+      How Structural Byte Segmentation Works
+    </h1>
+    <p style="font-size:17px;color:var(--text-muted);margin-bottom:40px;line-height:1.6;">
+      Deconstructing headerless binary byte streams through multiscale convolutional representations, bidirectional recurrent context, and dual-head boundary snapping.
+    </p>
+
+    <!-- Step 1 -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:28px;">
+      <h3 style="font-size:20px;color:var(--color-cyan);margin-bottom:12px;">1. The von Neumann Boundary Problem</h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:16px;">
+        In compiled software, instructions and data share the identical physical address space. When reverse engineering raw firmware or memory dumps without ELF/PE headers, disassemblers routinely interpret embedded jump tables or string pools as machine code, resulting in catastrophic desynchronization.
+      </p>
+      <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;padding:16px;font-family:var(--font-mono);font-size:13px;color:var(--text-main);">
+        [0x0000] 55 48 89 E5 48 83 EC 20   --> x86-64: push rbp; mov rbp, rsp; sub rsp, 32<br>
+        [0x0008] 48 8D 3D 15 20 00 00      --> x86-64: lea rdi, [rip + 0x2015]<br>
+        [0x000F] 00 00 00 00 00 00 00 00   --> PADDING: Null alignment boundary<br>
+        [0x0017] 46 61 74 61 6C 20 45 72   --> DATA_STRING: "Fatal Error: DMA timeout\0"
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:28px;">
+      <h3 style="font-size:20px;color:var(--color-emerald);margin-bottom:12px;">2. Multiscale 1D Convolutions</h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:16px;">
+        KethraSeg projects 256 discrete byte tokens into a 48-dimensional dense embedding space. To capture patterns spanning multiple structural lengths, four parallel 1D convolutional branches are executed simultaneously:
+      </p>
+      <ul style="color:var(--text-muted);font-size:14px;padding-left:20px;line-height:1.8;">
+        <li><strong>Kernel 3 (3 bytes):</strong> Detects variable-length instruction prefixes (REX prefixes, ModR/M bytes).</li>
+        <li><strong>Kernel 5 (5 bytes):</strong> Captures typical individual instruction lengths and 32-bit immediate offsets.</li>
+        <li><strong>Kernel 9 (9 bytes):</strong> Identifies 64-bit aligned pointers and jump table relocation entries.</li>
+        <li><strong>Kernel 17 (17 bytes):</strong> Encapsulates function prologues, ASCII string runs, and NOP sleds.</li>
+      </ul>
+    </div>
+
+    <!-- Step 3 -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:28px;">
+      <h3 style="font-size:20px;color:var(--color-amber);margin-bottom:12px;">3. Bidirectional Recurrent Sequence Backbone</h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:16px;">
+        Local n-grams cannot determine whether a 16-byte block of printable bytes is an isolated ASCII identifier inside code or the start of an extensive string literal pool. KethraSeg routes fused convolutional features into a bidirectional sequence backbone (BiGRU). Forward and backward hidden states preserve global context, ensuring consistent segment boundaries.
+      </p>
+    </div>
+
+    <!-- Step 4 -->
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:28px;margin-bottom:28px;">
+      <h3 style="font-size:20px;color:var(--color-purple);margin-bottom:12px;">4. Exact Boundary Snapping & Decoding</h3>
+      <p style="color:var(--text-muted);font-size:15px;margin-bottom:16px;">
+        Standard neural segmenters suffer from boundary smearing (typically ±64 bytes). Kethravax eliminates this via a dedicated <strong>Boundary Head</strong> paired with an exact <strong>Local Gradient Snapper</strong>. The decoder scans local byte discontinuities (e.g. null-byte runs, ASCII transitions, 4/8/16-byte machine alignment) to lock segment boundaries to exact byte offsets.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div>
+        <strong style="color:var(--text-main);">KETHRAVAX</strong> — Open-Source Binary Structural Intelligence.
+      </div>
+      <div>
+        <a href="index.html" style="margin-right:16px;">Overview</a>
+        <a href="benchmarks.html" style="margin-right:16px;">Benchmarks</a>
+        <a href="https://github.com/kethravax/kethravax" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use KETHRAVAX in your research or binary analysis pipeline, please cite it as below."
+title: "KETHRAVAX: Precision Structural Byte Segmentation and Architecture Discovery for Raw Binary Streams"
+authors:
+  - name: "Kethravax Open Source AI Team"
+version: 0.1.0
+date-released: 2026-11-22
+license: Apache-2.0
+repository-code: "https://github.com/kethravax/kethravax"
+keywords:
+  - "binary analysis"
+  - "deep learning"
+  - "reverse engineering"
+  - "structural segmentation"
+  - "disassembly"
+  - "firmware analysis"
+

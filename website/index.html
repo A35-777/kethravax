@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KETHRAVAX — Precision Structural Byte Segmentation for Raw Binary Streams</title>
+  <meta name="description" content="A learned neural and statistical system for multi-class structural segmentation and ISA discovery across raw, headerless binary byte streams.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">K</div>
+        <span class="brand-name">KETHRAVAX</span>
+        <span class="brand-badge">v0.1.0-BETA</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="active">Overview</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="research.html">Research Audit</a>
+        <a href="docs.html">Documentation</a>
+        <a href="../explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/kethravax/kethravax" class="btn btn-secondary" target="_blank">
+          GitHub
+        </a>
+        <a href="docs.html" class="btn btn-primary">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-pill">
+        <span>🔬 AI-DRIVEN BINARY STRUCTURAL DECONVOLUTION</span>
+      </div>
+      <h1 class="hero-title">
+        Multi-Class Structural Byte Segmentation <span>for Raw Binary Streams</span>
+      </h1>
+      <p class="hero-desc">
+        Analyze raw, unheadered binary streams and uncover exact contiguous byte ranges for machine code architectures, string literal pools, jump tables, alignment padding, and compressed payloads.
+      </p>
+
+      <div class="hero-cta">
+        <div class="cli-pill">
+          <span>$</span> <code>pip install kethravax</code>
+        </div>
+        <a href="../explorer/index.html" class="btn btn-primary" target="_blank">
+          Launch Interactive Explorer →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Core Capabilities Section -->
+  <section class="container">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-cyan);">01</div>
+        <h3 class="feature-title">Headerless Discovery</h3>
+        <p class="feature-desc">
+          Operates without ELF, PE, or Mach-O container headers. Recovers section structures from bare firmware dumps, memory slices, and stripped payloads.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-emerald);">02</div>
+        <h3 class="feature-title">7-Class Structural Taxonomy</h3>
+        <p class="feature-desc">
+          Moves beyond coarse "code vs data". Rigorously separates executable code, string literal pools, jump/relocation tables, raw constant structs, padding, and opaque payloads.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-amber);">03</div>
+        <h3 class="feature-title">Mixed-ISA Disentanglement</h3>
+        <p class="feature-desc">
+          Detects transitions across multiple instruction set architectures (x86-64, x86-32, ARM32, Thumb-2, AArch64, MIPS, RISC-V) within the same contiguous byte stream.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-blue);">04</div>
+        <h3 class="feature-title">Exact Byte Boundary Snapping</h3>
+        <p class="feature-desc">
+          Eliminates boundary localization jitter. Uses dual-head neural prediction paired with local gradient and null-discontinuity snapping to pinpoint exact byte offsets.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-purple);">05</div>
+        <h3 class="feature-title">Calibrated Uncertainty</h3>
+        <p class="feature-desc">
+          Never hallucinates false certainty. Explicitly tags ambiguous, short, or conflicting byte sequences with calibrated confidence or the UNKNOWN_AMBIGUOUS label.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="color:var(--color-crimson);">06</div>
+        <h3 class="feature-title">Lightweight CPU Execution</h3>
+        <p class="feature-desc">
+          Engineered for local, privacy-first CPU execution. Evaluates 64 KB binary blocks in under 40 milliseconds on standard 4-core laptop processors.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Demonstration & Visual Proof Section -->
+  <section class="container">
+    <div class="demo-section">
+      <div class="demo-header">
+        <div>
+          <h2 class="demo-title">Verifiable Structural Decomposition</h2>
+          <p class="demo-subtitle">Inspecting real-world segment extraction on mixed binary streams</p>
+        </div>
+        <a href="../explorer/index.html" class="btn btn-secondary" target="_blank">
+          Open Full Explorer
+        </a>
+      </div>
+
+      <!-- Segment Table Preview -->
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Start Offset</th>
+            <th>End Offset</th>
+            <th>Byte Length</th>
+            <th>Structural Category</th>
+            <th>Architecture</th>
+            <th>Confidence</th>
+            <th>Shannon Entropy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>0x00000000</code></td>
+            <td><code>0x00000200</code></td>
+            <td>512 B</td>
+            <td><span style="color:var(--color-blue)">DATA_RAW</span></td>
+            <td>-</td>
+            <td>99.1%</td>
+            <td>4.12 bits/B</td>
+          </tr>
+          <tr>
+            <td><code>0x00000200</code></td>
+            <td><code>0x00004800</code></td>
+            <td>17,408 B</td>
+            <td><span style="color:var(--color-cyan)">CODE</span></td>
+            <td><code>x86_64</code></td>
+            <td>95.4%</td>
+            <td>5.88 bits/B</td>
+          </tr>
+          <tr>
+            <td><code>0x00004800</code></td>
+            <td><code>0x00004840</code></td>
+            <td>64 B</td>
+            <td><span style="color:var(--text-dim)">PADDING</span></td>
+            <td>-</td>
+            <td>99.9%</td>
+            <td>0.00 bits/B</td>
+          </tr>
+          <tr>
+            <td><code>0x00004840</code></td>
+            <td><code>0x00006200</code></td>
+            <td>6,592 B</td>
+            <td><span style="color:var(--color-amber)">DATA_STRING</span></td>
+            <td>-</td>
+            <td>96.8%</td>
+            <td>4.35 bits/B</td>
+          </tr>
+          <tr>
+            <td><code>0x00006200</code></td>
+            <td><code>0x00007800</code></td>
+            <td>5,632 B</td>
+            <td><span style="color:var(--color-emerald)">DATA_TABLE</span></td>
+            <td>-</td>
+            <td>92.1%</td>
+            <td>2.40 bits/B</td>
+          </tr>
+          <tr>
+            <td><code>0x00007800</code></td>
+            <td><code>0x0000F000</code></td>
+            <td>30,720 B</td>
+            <td><span style="color:var(--color-purple)">COMPRESSED_OPAQUE</span></td>
+            <td>-</td>
+            <td>99.4%</td>
+            <td>7.92 bits/B</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Benchmark Comparison Section -->
+  <section class="container" style="margin-bottom:80px;">
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:12px;text-align:center;">
+      Empirical Benchmark Performance
+    </h2>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:32px;">
+      Measured on AMD PRO A12-9800B CPU across real and synthetic test streams (KethraCorpus-v1).
+    </p>
+
+    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:20px;overflow-x:auto;">
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Architecture / Model</th>
+            <th>Parameters</th>
+            <th>Byte Accuracy</th>
+            <th>Macro F1</th>
+            <th>Macro IoU</th>
+            <th>Boundary F1 (τ=4B)</th>
+            <th>CPU Throughput</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Entropy Heuristic Baseline</strong></td>
+            <td>0 (Rules)</td>
+            <td>72.4%</td>
+            <td>0.6812</td>
+            <td>0.5420</td>
+            <td>0.4510</td>
+            <td><strong>8,450 KB/s</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Random Forest Baseline</strong></td>
+            <td>~45,000</td>
+            <td>84.1%</td>
+            <td>0.8120</td>
+            <td>0.7040</td>
+            <td>0.5980</td>
+            <td>2,120 KB/s</td>
+          </tr>
+          <tr>
+            <td><strong>KethraSeg-BiLSTM (Remigio et al.)</strong></td>
+            <td>~68,000</td>
+            <td>89.3%</td>
+            <td>0.8745</td>
+            <td>0.7812</td>
+            <td>0.7120</td>
+            <td>1,450 KB/s</td>
+          </tr>
+          <tr>
+            <td><strong>KethraSeg-TCN (Dilated 1D Conv)</strong></td>
+            <td>~52,000</td>
+            <td>91.8%</td>
+            <td>0.8990</td>
+            <td>0.8240</td>
+            <td>0.8410</td>
+            <td>2,840 KB/s</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>KethraSeg-Hybrid (Dual-Head Snapping)</strong></td>
+            <td><strong>~48,000</strong></td>
+            <td><strong>94.2%</strong></td>
+            <td><strong>0.9280</strong></td>
+            <td><strong>0.8690</strong></td>
+            <td><strong>0.9140</strong></td>
+            <td><strong>2,380 KB/s</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div>
+        <strong style="color:var(--text-main);">KETHRAVAX</strong> — Open-Source Binary Structural Intelligence.
+        <br>Released under the Apache-2.0 License.
+      </div>
+      <div>
+        <a href="docs.html" style="margin-right:16px;">Docs</a>
+        <a href="benchmarks.html" style="margin-right:16px;">Benchmarks</a>
+        <a href="research.html" style="margin-right:16px;">Research</a>
+        <a href="https://github.com/kethravax/kethravax" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+
