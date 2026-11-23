@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback &amp; Contributions — KETHRAVAX</title>
+  <meta name="description" content="Submit feedback or sample reports for KETHRAVAX.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">FEEDBACK</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:4rem 1.5rem; max-width:760px;">
+    <div class="hero-badge">COMMUNITY &amp; FEEDBACK</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      Submit Feedback
+    </h1>
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 2.5rem 0;">
+      Encountered an edge case or have a suggestion for an architecture or structural category?
+    </p>
+
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;">
+      <form onsubmit="event.preventDefault(); document.getElementById('fbMsg').style.display='block'; this.reset();">
+        <div style="margin-bottom:1.25rem;">
+          <label style="display:block; font-family:var(--font-mono); font-size:0.85rem; color:var(--text-dim); margin-bottom:0.4rem;">Your Name / Handle</label>
+          <input type="text" required style="width:100%; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.65rem 0.85rem; color:var(--text); font-family:var(--font-sans);">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+          <label style="display:block; font-family:var(--font-mono); font-size:0.85rem; color:var(--text-dim); margin-bottom:0.4rem;">Topic</label>
+          <select style="width:100%; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.65rem 0.85rem; color:var(--text); font-family:var(--font-sans);">
+            <option>Boundary Localization Bug</option>
+            <option>Architecture Detection Edge Case</option>
+            <option>New Feature / Category Suggestion</option>
+            <option>General Research Question</option>
+          </select>
+        </div>
+        <div style="margin-bottom:1.5rem;">
+          <label style="display:block; font-family:var(--font-mono); font-size:0.85rem; color:var(--text-dim); margin-bottom:0.4rem;">Message / Diagnostics</label>
+          <textarea rows="5" required style="width:100%; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.65rem 0.85rem; color:var(--text); font-family:var(--font-mono); font-size:0.85rem;"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Feedback</button>
+        <div id="fbMsg" style="display:none; margin-top:1rem; padding:0.75rem 1rem; background:rgba(16, 185, 129, 0.15); border:1px solid var(--emerald); border-radius:var(--radius-sm); color:var(--emerald); font-size:0.85rem;">
+          ✓ Thank you for your feedback! For bug reports, you can also open an issue on <a href="https://github.com/A35-777/kethravax/issues" target="_blank" style="text-decoration:underline;">GitHub Issues</a>.
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX FEEDBACK</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

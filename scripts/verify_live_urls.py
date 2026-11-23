@@ -3,16 +3,23 @@ import time
 
 urls = [
     'https://kethravax.pages.dev/',
-    'https://kethravax.pages.dev/how-it-works.html',
+    'https://kethravax.pages.dev/features.html',
     'https://kethravax.pages.dev/benchmarks.html',
+    'https://kethravax.pages.dev/how-it-works.html',
     'https://kethravax.pages.dev/research.html',
     'https://kethravax.pages.dev/docs.html',
-    'https://kethravax.pages.dev/explorer/index.html',
+    'https://kethravax.pages.dev/about.html',
+    'https://kethravax.pages.dev/changelog.html',
+    'https://kethravax.pages.dev/feedback.html',
+    'https://kethravax.pages.dev/privacy.html',
     'https://kethravax.pages.dev/explorer/',
+    'https://kethravax.pages.dev/explorer/index.html',
     'https://kethravax.pages.dev/styles.css',
+    'https://kethravax.pages.dev/app.js',
+    'https://kethravax.pages.dev/favicon.svg',
+    'https://kethravax.pages.dev/llms.txt',
     'https://kethravax.pages.dev/robots.txt',
-    'https://kethravax.pages.dev/sitemap.xml',
-    'https://0596ca08.kethravax.pages.dev/'
+    'https://kethravax.pages.dev/sitemap.xml'
 ]
 
 all_passed = True

@@ -1,0 +1,39 @@
+# KETHRAVAX — LLM Reference Documentation
+
+> KETHRAVAX: Precision Multi-Class Structural Byte-Stream Segmentation & ISA Discovery for Raw Binary Streams.
+> Author: Arin Goel (@A35-777)
+> License: Apache-2.0
+> Website: https://kethravax.pages.dev
+> GitHub: https://github.com/A35-777/kethravax
+
+## Overview
+KETHRAVAX is a learned neural and statistical system that analyzes raw, headerless binary byte streams and decomposes them into contiguous, non-overlapping intervals belonging to distinct structural categories without requiring ELF, PE, or Mach-O container metadata.
+
+## 7 Structural Categories
+1. CODE: Contiguous machine instructions for supported ISAs.
+2. DATA_STRING: Null-terminated or length-prefixed ASCII/UTF-8 string literals, format strings, and diagnostics.
+3. DATA_TABLE: Switch jump tables, relocation arrays, vtables, and 32/64-bit pointer arrays.
+4. DATA_RAW: Initialized constant structures, bitmaps, configuration blocks.
+5. PADDING: Alignment bytes (0x00, 0x90 NOP sleds, 0xCC int3).
+6. COMPRESSED_OPAQUE: High-entropy deflate/zstd/lzma payloads and cryptographic ciphertext.
+7. UNKNOWN_AMBIGUOUS: Regions lacking sufficient local context.
+
+## Supported Architectures
+x86_64, x86_32, arm32_arm, arm32_thumb, aarch64, mips32, riscv.
+
+## Model Architecture
+- Byte Embedding (256 -> 48-dim)
+- Multiscale 1D Convolutions (Kernels: 3, 5, 9, 17)
+- Bidirectional GRU Sequence Backbone
+- Multi-head Output: Structural Category, Target ISA, and Boundary Transition
+- Local Byte Gradient and Discontinuity Snapper (snaps to exact 0-byte machine alignment boundaries)
+
+## Python API Quickstart
+```python
+from kethravax import BinarySegmenter
+
+segmenter = BinarySegmenter.load_pretrained()
+result = segmenter.analyze_bytes(raw_bytes)
+for seg in result.segments:
+    print(f"[{seg.start:#06x}..{seg.end:#06x}] {seg.category.name} (Conf: {seg.confidence:.1%})")
+```
