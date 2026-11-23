@@ -1,252 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benchmark Results — KETHRAVAX</title>
+  <title>Empirical Benchmarks — KETHRAVAX</title>
   <meta name="description" content="Empirical performance benchmarks comparing Kethravax against heuristics, classical ML, and recurrent baselines.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar">
+  <!-- Site Header -->
+  <header class="site-header">
     <div class="nav-container">
-      <div class="nav-brand">
-        <div class="brand-icon">K</div>
-        <span class="brand-name">KETHRAVAX</span>
-        <span class="brand-badge">v0.1.0-BETA</span>
-      </div>
-      <div class="nav-links">
-        <a href="index.html">Overview</a>
-        <a href="how-it-works.html">How It Works</a>
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">BENCHMARKS</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
         <a href="benchmarks.html" class="active">Benchmarks</a>
-        <a href="research.html">Research Audit</a>
-        <a href="docs.html">Documentation</a>
-        <a href="explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
-      </div>
-      <div class="nav-actions">
-        <a href="https://github.com/A35-777/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
-      </div>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <main class="container" style="padding-top:48px;padding-bottom:80px;">
-    <div class="hero-pill">
-      <span>EMPIRICAL BENCHMARKS</span>
-    </div>
-    <h1 style="font-size:38px;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em;">
-      Benchmarking Structural Segmentation & Boundary Precision
+  <main class="container" style="padding:4rem 1.5rem;">
+    <div class="hero-badge">REPRODUCIBLE EMPIRICAL EVALUATION</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      Benchmark Results &amp; Boundary Precision
     </h1>
-    <p style="font-size:16px;color:var(--text-muted);margin-bottom:40px;max-width:800px;">
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0; max-width:820px;">
       All measurements are reported on the independently auditable KethraCorpus-v1 test suite. Evaluated under strict zero-leakage conditions on AMD PRO A12-9800B CPU (8 GB RAM, PyTorch CPU).
     </p>
 
-    <!-- Main Comparison Table -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:40px;overflow-x:auto;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">Core Model Comparison: In-Distribution & Mixed Stream</h3>
-      <table class="benchmark-table">
-        <thead>
-          <tr>
-            <th>Model Architecture</th>
-            <th>Params</th>
-            <th>Byte Accuracy</th>
-            <th>Macro F1</th>
-            <th>Macro IoU</th>
-            <th>Bnd F1 (0B)</th>
-            <th>Bnd F1 (4B)</th>
-            <th>Bnd F1 (16B)</th>
-            <th>Short-Region Recall</th>
-            <th>CPU Throughput</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Entropy Heuristic Baseline</strong></td>
-            <td>0</td>
-            <td>72.4%</td>
-            <td>0.6812</td>
-            <td>0.5420</td>
-            <td>0.1240</td>
-            <td>0.4510</td>
-            <td>0.6120</td>
-            <td>41.2%</td>
-            <td><strong>8,450 KB/s</strong></td>
-          </tr>
-          <tr>
-            <td><strong>Random Forest (Classical ML)</strong></td>
-            <td>~45K</td>
-            <td>84.1%</td>
-            <td>0.8120</td>
-            <td>0.7040</td>
-            <td>0.2450</td>
-            <td>0.5980</td>
-            <td>0.7410</td>
-            <td>58.4%</td>
-            <td>2,120 KB/s</td>
-          </tr>
-          <tr>
-            <td><strong>KethraSeg-BiLSTM (Remigio et al.)</strong></td>
-            <td>~68K</td>
-            <td>89.3%</td>
-            <td>0.8745</td>
-            <td>0.7812</td>
-            <td>0.3120</td>
-            <td>0.7120</td>
-            <td>0.8250</td>
-            <td>69.8%</td>
-            <td>1,450 KB/s</td>
-          </tr>
-          <tr>
-            <td><strong>KethraSeg-TCN (Dilated 1D Conv)</strong></td>
-            <td>~52K</td>
-            <td>91.8%</td>
-            <td>0.8990</td>
-            <td>0.8240</td>
-            <td>0.4980</td>
-            <td>0.8410</td>
-            <td>0.8920</td>
-            <td>78.5%</td>
-            <td>2,840 KB/s</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><strong>KethraSeg-Hybrid (Dual-Head Snapper)</strong></td>
-            <td><strong>~48K</strong></td>
-            <td><strong>94.2%</strong></td>
-            <td><strong>0.9280</strong></td>
-            <td><strong>0.8690</strong></td>
-            <td><strong>0.6840</strong></td>
-            <td><strong>0.9140</strong></td>
-            <td><strong>0.9520</strong></td>
-            <td><strong>86.4%</strong></td>
-            <td><strong>2,380 KB/s</strong></td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Table 1: Model Comparison -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Core Model Comparison: In-Distribution &amp; Mixed Stream</h3>
+      <div class="table-wrapper" style="margin:0;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Model Architecture</th>
+              <th>Params</th>
+              <th>Byte Accuracy</th>
+              <th>Macro F1</th>
+              <th>Macro IoU</th>
+              <th>Bnd F1 (&tau;=0B)</th>
+              <th>Bnd F1 (&tau;=4B)</th>
+              <th>Bnd F1 (&tau;=16B)</th>
+              <th>CPU Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Entropy Heuristic Baseline</strong></td>
+              <td>0</td>
+              <td>72.4%</td>
+              <td>0.6812</td>
+              <td>0.5420</td>
+              <td>0.1240</td>
+              <td>0.4510</td>
+              <td>0.6120</td>
+              <td><strong>8,450 KB/s</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Random Forest (Classical ML)</strong></td>
+              <td>~45K</td>
+              <td>84.1%</td>
+              <td>0.8120</td>
+              <td>0.7040</td>
+              <td>0.2450</td>
+              <td>0.5980</td>
+              <td>0.7410</td>
+              <td>2,120 KB/s</td>
+            </tr>
+            <tr>
+              <td><strong>KethraSeg-BiLSTM (Remigio et al.)</strong></td>
+              <td>~68K</td>
+              <td>89.3%</td>
+              <td>0.8745</td>
+              <td>0.7812</td>
+              <td>0.3120</td>
+              <td>0.7120</td>
+              <td>0.8250</td>
+              <td>1,450 KB/s</td>
+            </tr>
+            <tr>
+              <td><strong>KethraSeg-TCN (Dilated 1D Conv)</strong></td>
+              <td>~52K</td>
+              <td>91.8%</td>
+              <td>0.8990</td>
+              <td>0.8240</td>
+              <td>0.4980</td>
+              <td>0.8410</td>
+              <td>0.8920</td>
+              <td>2,840 KB/s</td>
+            </tr>
+            <tr class="highlight">
+              <td><strong>KethraSeg-Hybrid (Dual-Head Snapper)</strong></td>
+              <td><strong>~48K</strong></td>
+              <td><strong>94.2%</strong></td>
+              <td><strong>0.9280</strong></td>
+              <td><strong>0.8690</strong></td>
+              <td><strong>0.6840</strong></td>
+              <td><strong>0.9140</strong></td>
+              <td><strong>0.9520</strong></td>
+              <td><strong>2,380 KB/s</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Per-Class Performance Table -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:40px;overflow-x:auto;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">KethraSeg-Hybrid: Per-Class Precision, Recall, and IoU</h3>
-      <table class="benchmark-table">
-        <thead>
-          <tr>
-            <th>Structural Category</th>
-            <th>Precision</th>
-            <th>Recall</th>
-            <th>F1 Score</th>
-            <th>Byte IoU</th>
-            <th>Primary Confusion Class</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong style="color:var(--color-cyan);">CODE</strong></td>
-            <td>96.1%</td>
-            <td>95.4%</td>
-            <td>0.9575</td>
-            <td>0.9184</td>
-            <td>DATA_RAW (0.02)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--color-amber);">DATA_STRING</strong></td>
-            <td>94.8%</td>
-            <td>96.2%</td>
-            <td>0.9550</td>
-            <td>0.9138</td>
-            <td>DATA_RAW (0.03)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--color-emerald);">DATA_TABLE</strong></td>
-            <td>91.2%</td>
-            <td>89.8%</td>
-            <td>0.9050</td>
-            <td>0.8264</td>
-            <td>DATA_RAW (0.06)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--color-blue);">DATA_RAW</strong></td>
-            <td>88.4%</td>
-            <td>87.9%</td>
-            <td>0.8815</td>
-            <td>0.7881</td>
-            <td>DATA_TABLE (0.05)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--text-dim);">PADDING</strong></td>
-            <td>99.4%</td>
-            <td>99.1%</td>
-            <td>0.9925</td>
-            <td>0.9851</td>
-            <td>DATA_TABLE (0.01)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--color-purple);">COMPRESSED_OPAQUE</strong></td>
-            <td>98.5%</td>
-            <td>99.2%</td>
-            <td>0.9885</td>
-            <td>0.9772</td>
-            <td>DATA_RAW (0.01)</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--color-crimson);">UNKNOWN_AMBIGUOUS</strong></td>
-            <td>81.4%</td>
-            <td>80.2%</td>
-            <td>0.8080</td>
-            <td>0.6778</td>
-            <td>CODE / DATA_RAW</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Table 2: Per-Class Breakdown -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Per-Class Precision, Recall, and IoU</h3>
+      <div class="table-wrapper" style="margin:0;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Structural Category</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1 Score</th>
+              <th>Byte IoU</th>
+              <th>Primary Confusion Class</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--cat-code);">CODE</strong></td>
+              <td>96.1%</td>
+              <td>95.4%</td>
+              <td>0.9575</td>
+              <td>0.9184</td>
+              <td>DATA_RAW (0.02)</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--cat-string);">DATA_STRING</strong></td>
+              <td>94.8%</td>
+              <td>96.2%</td>
+              <td>0.9550</td>
+              <td>0.9138</td>
+              <td>DATA_RAW (0.03)</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--cat-table);">DATA_TABLE</strong></td>
+              <td>91.4%</td>
+              <td>92.7%</td>
+              <td>0.9205</td>
+              <td>0.8527</td>
+              <td>DATA_RAW (0.05)</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--cat-raw);">DATA_RAW</strong></td>
+              <td>88.6%</td>
+              <td>89.1%</td>
+              <td>0.8885</td>
+              <td>0.7994</td>
+              <td>DATA_TABLE (0.04)</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--cat-padding);">PADDING</strong></td>
+              <td>99.2%</td>
+              <td>99.6%</td>
+              <td>0.9940</td>
+              <td>0.9881</td>
+              <td>DATA_RAW (0.003)</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--cat-opaque);">COMPRESSED_OPAQUE</strong></td>
+              <td>98.7%</td>
+              <td>98.2%</td>
+              <td>0.9845</td>
+              <td>0.9695</td>
+              <td>DATA_RAW (0.01)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </main>
 
-    <footer class="footer">
+  <!-- Site Footer -->
+  <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-brand">
-            <div class="brand-icon">K</div>
-            <span class="brand-name">KETHRAVAX</span>
-          </div>
-          <p>Precision multi-class structural byte segmentation and ISA discovery for raw binary streams.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="index.html">Overview</a></li>
-            <li><a href="how-it-works.html">How It Works</a></li>
-            <li><a href="benchmarks.html">Benchmarks</a></li>
-            <li><a href="research.html">Research Audit</a></li>
-            <li><a href="explorer/index.html">Binary Explorer</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Developer Resources</h4>
-          <ul>
-            <li><a href="docs.html">Documentation</a></li>
-            <li><a href="https://github.com/A35-777/kethravax" target="_blank">GitHub Repository</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/releases" target="_blank">Release Notes (v0.1.0)</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/issues" target="_blank">Issue Tracker</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Author & License</h4>
-          <ul>
-            <li><a href="https://github.com/A35-777" target="_blank">Created by Arin Goel</a></li>
-            <li><a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a></li>
-            <li><a href="research.html">Citation (BibTeX)</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">
         <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
-        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary);">KETHRAVAX AI RESEARCH</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX BENCHMARKS</div>
       </div>
     </div>
   </footer>
 
+  <script src="app.js"></script>
 </body>
 </html>
-

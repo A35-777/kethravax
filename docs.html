@@ -1,194 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Developer Documentation — KETHRAVAX</title>
+  <title>Documentation &amp; SDK — KETHRAVAX</title>
   <meta name="description" content="Official documentation, Python SDK guide, CLI reference, and JSON schema.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar">
+  <!-- Site Header -->
+  <header class="site-header">
     <div class="nav-container">
-      <div class="nav-brand">
-        <div class="brand-icon">K</div>
-        <span class="brand-name">KETHRAVAX</span>
-        <span class="brand-badge">v0.1.0-BETA</span>
-      </div>
-      <div class="nav-links">
-        <a href="index.html">Overview</a>
-        <a href="how-it-works.html">How It Works</a>
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">DOCS</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
         <a href="benchmarks.html">Benchmarks</a>
-        <a href="research.html">Research Audit</a>
-        <a href="docs.html" class="active">Documentation</a>
-        <a href="explorer/index.html" target="_blank" style="color:var(--color-cyan);">⚡ Binary Explorer</a>
-      </div>
-      <div class="nav-actions">
-        <a href="https://github.com/A35-777/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
-      </div>
+        <a href="docs.html" class="active">Docs</a>
+        <a href="about.html">About</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <main class="container" style="padding-top:48px;padding-bottom:80px;max-width:960px;">
-    <div class="hero-pill">
-      <span>DEVELOPER MANUAL</span>
-    </div>
-    <h1 style="font-size:38px;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em;">
-      Documentation & Integration Guide
+  <main class="container" style="padding:4rem 1.5rem; max-width:960px;">
+    <div class="hero-badge">DEVELOPER INTEGRATION MANUAL</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      Documentation &amp; Quickstart
     </h1>
-    <p style="font-size:16px;color:var(--text-muted);margin-bottom:40px;">
-      Complete reference for installing, configuring, and embedding KETHRAVAX in Python pipelines and command-line workflows.
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0;">
+      How to embed KETHRAVAX into automated reverse-engineering pipelines and CLI workflows.
     </p>
 
     <!-- Installation -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:28px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--color-cyan);">Installation</h3>
-      <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">Install via pip into your active Python 3.9+ virtual environment:</p>
-      <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;padding:12px 16px;font-family:var(--font-mono);font-size:13px;">
-        pip install kethravax
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Installation</h3>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">Install directly via pip or clone from GitHub:</p>
+      <div style="background:#040711; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.25rem; font-family:var(--font-mono); font-size:0.9rem;">
+        # Install from PyPI<br>
+        <span style="color:var(--accent);">pip install kethravax</span><br><br>
+        # Or install from source<br>
+        git clone https://github.com/A35-777/kethravax.git<br>
+        cd kethravax &amp;&amp; pip install -e .
       </div>
     </div>
 
-    <!-- Python SDK -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:28px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--color-emerald);">Python SDK Quickstart</h3>
-      <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">Load pre-trained weights and analyze local files or memory buffers:</p>
-      <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;padding:16px;font-family:var(--font-mono);font-size:13px;line-height:1.6;color:var(--text-main);">
-        <span style="color:#F59E0B">from</span> kethravax <span style="color:#F59E0B">import</span> BinarySegmenter<br><br>
-        <span style="color:#64748B"># Initialize default KethraSeg model</span><br>
-        segmenter = BinarySegmenter.from_pretrained(<span style="color:#10B981">"default"</span>)<br><br>
-        <span style="color:#64748B"># Segment a binary file</span><br>
-        result = segmenter.analyze_file(<span style="color:#10B981">"firmware_dump.bin"</span>)<br><br>
-        <span style="color:#F59E0B">for</span> seg <span style="color:#F59E0B">in</span> result.segments:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;print(f<span style="color:#10B981">"[{seg.start:#010x} - {seg.end:#010x}) {seg.category.value} {seg.confidence*100:.1f}%"</span>)
+    <!-- Python API -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Python SDK Integration</h3>
+      <div style="background:#040711; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.25rem; font-family:var(--font-mono); font-size:0.85rem; overflow-x:auto;">
+<span style="color:var(--purple);">from</span> kethravax <span style="color:var(--purple);">import</span> BinarySegmenter<br><br>
+<span style="color:var(--text-dim);"># Load neural segmentation engine</span><br>
+segmenter = BinarySegmenter.load_pretrained()<br><br>
+<span style="color:var(--text-dim);"># Analyze raw byte buffer (e.g. firmware slice)</span><br>
+result = segmenter.analyze_bytes(raw_bytes)<br><br>
+<span style="color:var(--purple);">for</span> seg <span style="color:var(--purple);">in</span> result.segments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arch_tag = <span style="color:var(--amber);">f" [{seg.arch.value}]"</span> <span style="color:var(--purple);">if</span> seg.category.name == <span style="color:var(--amber);">"CODE"</span> <span style="color:var(--purple);">else</span> <span style="color:var(--amber);">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;print(<span style="color:var(--amber);">f"[{seg.start:#08x}..{seg.end:#08x}) {seg.category.name:<18}{arch_tag:<14} Conf: {seg.confidence:.1%}"</span>)
       </div>
     </div>
 
     <!-- CLI Commands -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:28px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--color-amber);">CLI Subcommands</h3>
-      <table class="benchmark-table">
-        <thead>
-          <tr>
-            <th>Command</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>kethravax analyze &lt;file&gt;</code></td>
-            <td>Outputs a color-coded structural table of segments with exact offsets.</td>
-          </tr>
-          <tr>
-            <td><code>kethravax analyze &lt;file&gt; --format json</code></td>
-            <td>Exports machine-readable JSON segmentation manifest.</td>
-          </tr>
-          <tr>
-            <td><code>kethravax inspect &lt;file&gt; --offset 0x1000</code></td>
-            <td>Inspects enclosing segment diagnostics and displays hex dump.</td>
-          </tr>
-          <tr>
-            <td><code>kethravax model-info</code></td>
-            <td>Displays neural architecture parameters and model card specifications.</td>
-          </tr>
-          <tr>
-            <td><code>kethravax benchmark</code></td>
-            <td>Prints cached benchmark matrix against baselines.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- JSON Schema -->
-    <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;padding:24px;">
-      <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--color-purple);">Output JSON Schema</h3>
-      <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;padding:16px;font-family:var(--font-mono);font-size:12px;color:var(--text-main);overflow-x:auto;">
-{
-  "stream_id": "firmware.bin",
-  "total_bytes": 65536,
-  "segment_count": 2,
-  "is_valid_coverage": true,
-  "segments": [
-    {
-      "start": 0,
-      "end": 2048,
-      "length": 2048,
-      "category": "CODE",
-      "arch": "arm32_thumb",
-      "confidence": 0.965,
-      "diagnostics": {
-        "entropy": 5.84,
-        "null_ratio": 0.04,
-        "printable_ratio": 0.12
-      }
-    },
-    {
-      "start": 2048,
-      "end": 65536,
-      "length": 63488,
-      "category": "DATA_STRING",
-      "arch": "NONE",
-      "confidence": 0.982,
-      "diagnostics": {
-        "entropy": 4.21,
-        "null_ratio": 0.08,
-        "printable_ratio": 0.88
-      }
-    }
-  ]
-}
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Command-Line Interface</h3>
+      <div style="background:#040711; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.25rem; font-family:var(--font-mono); font-size:0.85rem;">
+        # Analyze and render visual color-coded terminal report<br>
+        <span style="color:var(--accent);">kethravax analyze firmware.bin</span><br><br>
+        # Export structured JSON report to disk<br>
+        <span style="color:var(--accent);">kethravax analyze firmware.bin --format json -o output.json</span><br><br>
+        # Inspect specific offset with synchronized hex &amp; ASCII preview<br>
+        <span style="color:var(--accent);">kethravax inspect firmware.bin --offset 0x1240 --length 128</span>
       </div>
     </div>
   </main>
 
-    <footer class="footer">
+  <!-- Site Footer -->
+  <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-brand">
-            <div class="brand-icon">K</div>
-            <span class="brand-name">KETHRAVAX</span>
-          </div>
-          <p>Precision multi-class structural byte segmentation and ISA discovery for raw binary streams.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="index.html">Overview</a></li>
-            <li><a href="how-it-works.html">How It Works</a></li>
-            <li><a href="benchmarks.html">Benchmarks</a></li>
-            <li><a href="research.html">Research Audit</a></li>
-            <li><a href="explorer/index.html">Binary Explorer</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Developer Resources</h4>
-          <ul>
-            <li><a href="docs.html">Documentation</a></li>
-            <li><a href="https://github.com/A35-777/kethravax" target="_blank">GitHub Repository</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/releases" target="_blank">Release Notes (v0.1.0)</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/issues" target="_blank">Issue Tracker</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Author & License</h4>
-          <ul>
-            <li><a href="https://github.com/A35-777" target="_blank">Created by Arin Goel</a></li>
-            <li><a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache 2.0 License</a></li>
-            <li><a href="research.html">Citation (BibTeX)</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">
         <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
-        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary);">KETHRAVAX AI RESEARCH</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX DOCS</div>
       </div>
     </div>
   </footer>
 
+  <script src="app.js"></script>
 </body>
 </html>
-

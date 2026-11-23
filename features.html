@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features &amp; Taxonomy — KETHRAVAX</title>
+  <meta name="description" content="Comprehensive breakdown of the 7-class structural taxonomy, ISA identification, exact boundary snapping, and uncertainty calibration.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">FEATURES</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html" class="active">Features</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:4rem 1.5rem;">
+    <div class="hero-badge">ARCHITECTURAL TAXONOMY &amp; DEEP-DIVE</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      Engineered for Deep Structural Deconvolution
+    </h1>
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0; max-width:820px;">
+      How KETHRAVAX breaks through the limitations of heuristic signature carvers and binary classifiers to provide exact multi-class structural segmentation.
+    </p>
+
+    <!-- Section 1: The 7 Structural Categories -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:1rem; color:var(--text);">1. Seven-Class Structural Taxonomy</h2>
+      <p style="color:var(--text-muted); margin-bottom:1.5rem;">
+        Binary byte streams are not monolithic blocks of code or data. Compiled executables contain complex interleaved structures. Kethravax identifies seven mutually exclusive structural classes:
+      </p>
+      
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1rem;">
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-code); font-family:var(--font-mono); margin-bottom:0.4rem;">● CODE (Executable Instructions)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Valid machine instructions across supported architectures. Exhibits characteristic opcode distributions and control-flow jumps.</p>
+        </div>
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-string); font-family:var(--font-mono); margin-bottom:0.4rem;">● DATA_STRING (Text Pools)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Runs of printable ASCII, UTF-8, or UTF-16 strings, error messages, format tokens, and symbol identifiers.</p>
+        </div>
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-table); font-family:var(--font-mono); margin-bottom:0.4rem;">● DATA_TABLE (Indirect Jumps &amp; VTables)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Pointer arrays, relocation tables, and switch jump targets aligned on 4-byte or 8-byte word boundaries.</p>
+        </div>
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-raw); font-family:var(--font-mono); margin-bottom:0.4rem;">● DATA_RAW (Constant Structures)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Non-string initialized constant structs, cryptographic s-boxes, protocol headers, and embedded binary assets.</p>
+        </div>
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-padding); font-family:var(--font-mono); margin-bottom:0.4rem;">● PADDING (Alignment Runs)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Runs of monotonic alignment fill bytes (0x00 nulls, 0x90 NOP sleds, 0xCC int3) ensuring machine-word boundary alignment.</p>
+        </div>
+        <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem;">
+          <h4 style="color:var(--cat-opaque); font-family:var(--font-mono); margin-bottom:0.4rem;">● COMPRESSED_OPAQUE (Crypto / Deflate)</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">High-entropy payloads (&gt;7.5 bits/byte) including zlib/gzip/zstd streams, encrypted blobs, and compressed rootfs images.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Exact Boundary Snapping -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:1rem; color:var(--text);">2. Exact Byte-Level Boundary Snapping</h2>
+      <p style="color:var(--text-muted); margin-bottom:1.5rem;">
+        Neural sequence models typically produce smeared boundaries (jitter of &plusmn;32 to &plusmn;64 bytes). KETHRAVAX couples the neural sequence backbone with a deterministic <strong>Local Gradient &amp; Discontinuity Snapper</strong>.
+      </p>
+      <div style="background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem; font-family:var(--font-mono); font-size:0.85rem;">
+        <span style="color:var(--cat-code);">[0x0000..0x0480]</span> 55 48 89 E5 48 83 EC 20 ... --> CODE (x86_64, Conf: 96.8%)<br>
+        <span style="color:var(--cat-padding);">[0x0480..0x04A0]</span> 00 00 00 00 00 00 00 00 ... --> PADDING (Null alignment, Discontinuity: Exact 0B)<br>
+        <span style="color:var(--cat-string);">[0x04A0..0x0820]</span> 46 61 74 61 6C 20 45 72 ... --> DATA_STRING ("Fatal Error: DMA timeout\0")
+      </div>
+    </div>
+
+    <!-- Section 3: Supported ISAs -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;">
+      <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:1rem; color:var(--text);">3. Multi-Architecture Support</h2>
+      <p style="color:var(--text-muted); margin-bottom:1.5rem;">
+        KETHRAVAX concurrently predicts target machine architecture whenever a region is classified as <code>CODE</code>:
+      </p>
+      <ul style="color:var(--text-muted); font-size:0.95rem; line-height:1.8; padding-left:1.5rem;">
+        <li><strong>x86_64 (AMD64):</strong> Variable length (1–15 bytes), REX prefixes, ModR/M decoding.</li>
+        <li><strong>x86_32 (IA-32):</strong> Legacy 32-bit x86 opcodes and register usage patterns.</li>
+        <li><strong>ARM32 (ARM State):</strong> Fixed 32-bit word alignment, condition codes (0xE0..0xEF).</li>
+        <li><strong>ARM32 (Thumb/Thumb-2):</strong> Mixed 16/32-bit compact instructions common in IoT firmware.</li>
+        <li><strong>AArch64 (ARM64):</strong> Modern 64-bit ARMv8/v9 fixed 4-byte instruction encodings.</li>
+        <li><strong>MIPS32:</strong> 32-bit MIPS RISC instructions in Big or Little Endian byte order.</li>
+        <li><strong>RISC-V (RV32I / RV64I):</strong> Open standard RISC architecture instructions.</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX FEATURES</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

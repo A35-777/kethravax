@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About KETHRAVAX — Author &amp; Motivation</title>
+  <meta name="description" content="About the author Arin Goel, research motivation, design principles, and citation for KETHRAVAX.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">ABOUT</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html" class="active">About</a>
+        <a href="changelog.html">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:4rem 1.5rem; max-width:960px;">
+    <div class="hero-badge">AUTHOR &amp; RESEARCH FOUNDATIONS</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      About KETHRAVAX
+    </h1>
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0;">
+      Created and maintained by <strong>Arin Goel</strong> (<a href="https://github.com/A35-777" target="_blank" style="color:var(--accent);">@A35-777</a>).
+    </p>
+
+    <!-- Section 1: Motivation -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Research Motivation</h2>
+      <p style="color:var(--text-muted); margin-bottom:1rem; line-height:1.7;">
+        In binary analysis and reverse engineering, container headers (like ELF section headers or PE data directories) are an artifact of the compiler and linker. When analyzing bare-metal IoT firmware, kernel memory injections, or corrupted disk images, those headers simply do not exist.
+      </p>
+      <p style="color:var(--text-muted); line-height:1.7;">
+        Existing tools either rely on coarse file-carving signatures (which miss embedded structures) or basic binary code/data classifiers. KETHRAVAX was created to provide a scientific, reproducible, multi-class segmentation engine that outputs exact byte-offset boundaries with calibrated uncertainty.
+      </p>
+    </div>
+
+    <!-- Section 2: Core Principles -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Core Engineering Principles</h2>
+      <ul style="color:var(--text-muted); line-height:1.8; padding-left:1.5rem;">
+        <li><strong>Zero Cloud Telemetry:</strong> Reverse engineering security researchers often inspect sensitive, classified, or proprietary payloads. KETHRAVAX runs 100% locally on CPU. No data ever leaves your device.</li>
+        <li><strong>Headerless by Design:</strong> Operates strictly on raw byte sequences. Does not assume or require magic bytes.</li>
+        <li><strong>Calibrated Uncertainty:</strong> Expresses honest confidence scores rather than hallucinating high certainty on short or ambiguous byte ranges.</li>
+        <li><strong>Strict Boundary Invariant:</strong> The segment sequence guarantees total byte coverage from offset 0 to EOF without overlapping, duplicate, or skipped bytes.</li>
+      </ul>
+    </div>
+
+    <!-- Section 3: Citation -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--text);">Academic Citation</h2>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">
+        If you use KETHRAVAX in your research or tooling, please cite:
+      </p>
+      <div style="background:#040711; border:1px solid var(--border); border-radius:var(--radius-sm); padding:1.25rem; font-family:var(--font-mono); font-size:0.85rem; overflow-x:auto;">
+@software{goel2026kethravax,<br>
+&nbsp;&nbsp;author = {Arin Goel},<br>
+&nbsp;&nbsp;title = {KETHRAVAX: Precision Structural Byte Segmentation and Architecture Discovery for Raw Binary Streams},<br>
+&nbsp;&nbsp;year = {2026},<br>
+&nbsp;&nbsp;publisher = {GitHub},<br>
+&nbsp;&nbsp;journal = {GitHub repository},<br>
+&nbsp;&nbsp;howpublished = {\url{https://github.com/A35-777/kethravax}}<br>
+}
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX ABOUT</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

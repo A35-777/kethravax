@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KETHRAVAX — Interactive Binary Explorer</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="stylesheet" href="../styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* Dedicated Explorer Ergonomics */
     .explorer-container {
@@ -20,12 +21,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-md);
+      background: var(--bg-alt, #0D1527);
+      border: 1px solid var(--border, #1E293B);
+      border-radius: var(--radius-md, 10px);
       padding: 12px 20px;
       margin-bottom: 24px;
-      font-family: var(--font-mono);
+      font-family: var(--font-mono, monospace);
       font-size: 13px;
       flex-wrap: wrap;
       gap: 12px;
@@ -38,9 +39,9 @@
     }
 
     .dropzone {
-      background: rgba(17, 23, 38, 0.6);
-      border: 2px dashed rgba(0, 240, 255, 0.3);
-      border-radius: var(--radius-lg);
+      background: var(--card-bg, rgba(17, 28, 53, 0.75));
+      border: 2px dashed rgba(0, 240, 255, 0.4);
+      border-radius: var(--radius-lg, 16px);
       padding: 36px 24px;
       text-align: center;
       cursor: pointer;
@@ -50,27 +51,27 @@
     }
 
     .dropzone:hover, .dropzone.dragover {
-      background: rgba(0, 240, 255, 0.06);
-      border-color: var(--color-cyan);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+      background: rgba(0, 240, 255, 0.08);
+      border-color: var(--accent, #00F0FF);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
     }
 
     .sample-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-medium);
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
+      background: var(--card-bg, rgba(17, 28, 53, 0.75));
+      border: 1px solid var(--border, #1E293B);
+      color: var(--text-muted, #94A3B8);
+      font-family: var(--font-mono, monospace);
       font-size: 12px;
       padding: 6px 14px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-sm, 6px);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .sample-btn:hover {
-      background: var(--color-cyan-glow);
-      color: var(--color-cyan);
-      border-color: rgba(0, 240, 255, 0.4);
+      background: var(--accent-glow, rgba(0, 240, 255, 0.16));
+      color: var(--accent, #00F0FF);
+      border-color: var(--accent, #00F0FF);
     }
 
     .stats-row {
@@ -81,16 +82,16 @@
     }
 
     .stat-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+      background: var(--card-bg, rgba(17, 28, 53, 0.75));
+      border: 1px solid var(--border, #1E293B);
+      border-radius: var(--radius-md, 10px);
       padding: 16px 20px;
     }
 
     .stat-label {
       font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--text-tertiary);
+      font-family: var(--font-mono, monospace);
+      color: var(--text-dim, #64748B);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 6px;
@@ -99,8 +100,8 @@
     .stat-val {
       font-size: 20px;
       font-weight: 700;
-      color: #FFF;
-      font-family: var(--font-mono);
+      color: var(--text, #F1F5F9);
+      font-family: var(--font-mono, monospace);
     }
 
     .workspace-split {
@@ -115,20 +116,20 @@
     }
 
     .pane-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-lg);
+      background: var(--bg-alt, #0D1527);
+      border: 1px solid var(--border, #1E293B);
+      border-radius: var(--radius-lg, 16px);
       padding: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
 
     .pane-title {
       font-size: 14px;
-      font-family: var(--font-mono);
+      font-family: var(--font-mono, monospace);
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text-primary);
+      color: var(--text, #F1F5F9);
       margin-bottom: 16px;
       display: flex;
       align-items: center;
@@ -138,17 +139,17 @@
     .segment-table-scroll {
       max-height: 480px;
       overflow-y: auto;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
+      border: 1px solid var(--border, #1E293B);
+      border-radius: var(--radius-sm, 6px);
     }
 
     .seg-row {
       display: grid;
       grid-template-columns: 100px 100px 1fr 70px;
       padding: 10px 14px;
-      font-family: var(--font-mono);
+      font-family: var(--font-mono, monospace);
       font-size: 12px;
-      border-bottom: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border, #1E293B);
       cursor: pointer;
       align-items: center;
       transition: background 0.15s;
@@ -159,19 +160,19 @@
     }
 
     .seg-row.active {
-      background: rgba(0, 240, 255, 0.12);
-      border-left: 3px solid var(--color-cyan);
+      background: rgba(0, 240, 255, 0.15);
+      border-left: 3px solid #00F0FF;
     }
 
     .hex-dump-scroll {
       max-height: 480px;
       overflow-y: auto;
-      font-family: var(--font-mono);
+      font-family: var(--font-mono, monospace);
       font-size: 12px;
       line-height: 1.8;
-      background: #04060A;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
+      background: #040711;
+      border: 1px solid var(--border, #1E293B);
+      border-radius: var(--radius-sm, 6px);
       padding: 14px;
     }
 
@@ -182,27 +183,47 @@
     }
 
     .hex-addr {
-      color: var(--text-dim);
+      color: var(--text-dim, #64748B);
       user-select: none;
     }
 
     .hex-bytes {
-      color: #94A3B8;
+      color: var(--text-muted, #94A3B8);
       flex: 1;
     }
 
     .hex-ascii {
-      color: #38BDF8;
+      color: #00F0FF;
       width: 140px;
-      border-left: 1px solid var(--border-subtle);
+      border-left: 1px solid var(--border, #1E293B);
       padding-left: 12px;
+    }
+
+    .byte-ribbon {
+      display: flex;
+      height: 28px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border, #1E293B);
+      margin: 16px 0;
+      background: #040711;
+    }
+
+    .byte-segment {
+      height: 100%;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .byte-segment:hover {
+      opacity: 0.8;
     }
 
     .inspector-card {
       margin-top: 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-glow);
-      border-radius: var(--radius-lg);
+      background: var(--card-bg, rgba(17, 28, 53, 0.75));
+      border: 1px solid var(--accent, #00F0FF);
+      border-radius: var(--radius-lg, 16px);
       padding: 24px;
     }
   </style>
@@ -210,41 +231,38 @@
 <body>
 
   <!-- Navigation -->
-  <nav class="navbar">
+  <header class="site-header">
     <div class="nav-container">
-      <div class="nav-brand">
-        <div class="brand-icon">K</div>
-        <span class="brand-name">KETHRAVAX</span>
-        <span class="brand-badge">BINARY EXPLORER</span>
-      </div>
-      <div class="nav-links">
+      <a href="../index.html" class="brand">
+        <img src="../favicon.svg" alt="KETHRAVAX Logo" width="32" height="32">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">EXPLORER</span>
+      </a>
+      <nav class="nav-menu">
         <a href="../index.html">← Back to Overview</a>
-        <a href="../how-it-works.html">Architecture</a>
+        <a href="../features.html">Features</a>
         <a href="../benchmarks.html">Benchmarks</a>
         <a href="../docs.html">Docs</a>
-      </div>
-      <div class="nav-actions">
-        <button class="btn btn-outline-cyan" onclick="exportJSON()">Export JSON</button>
-        <a href="https://github.com/A35-777/kethravax" class="btn btn-secondary" target="_blank">GitHub</a>
-      </div>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
     </div>
-  </nav>
+  </header>
 
   <main class="explorer-container">
     <!-- Telemetry Strip -->
     <div class="telemetry-strip">
       <div class="telemetry-item">
-        <span class="pulsing-dot"></span>
-        <span style="color:#FFF;">ENGINE:</span> <span style="color:var(--color-cyan);">KethraSeg-Hybrid v0.1.0</span>
+        <span style="color:#00F0FF;">● ENGINE:</span> <strong style="color:var(--text, #FFF);">KethraSeg-Hybrid v0.1.0</strong>
       </div>
       <div class="telemetry-item">
-        <span>RUNTIME:</span> <span style="color:var(--color-emerald);">Zero-Cloud WASM / Local CPU</span>
+        <span>RUNTIME:</span> <strong style="color:#10B981;">Zero-Cloud WASM / Local CPU</strong>
       </div>
       <div class="telemetry-item">
-        <span>BOUNDARIES:</span> <span style="color:var(--color-amber);">Discontinuity Snapped (τ=0B)</span>
+        <span>BOUNDARIES:</span> <strong style="color:#F59E0B;">Discontinuity Snapped (&tau;=0B)</strong>
       </div>
       <div class="telemetry-item">
-        <span>SECURITY:</span> <span style="color:var(--color-blue);">100% Client-Side Isolated</span>
+        <span>SECURITY:</span> <strong style="color:#38BDF8;">100% Client-Side Isolated</strong>
       </div>
     </div>
 
@@ -253,11 +271,11 @@
       <input type="file" id="fileInput" style="display:none;">
       <div style="font-size:32px; margin-bottom:8px;">⚡</div>
       <h3 style="font-size:18px; font-weight:700; margin-bottom:6px;">Drop Raw Binary File Here</h3>
-      <p style="color:var(--text-secondary); font-size:14px; margin-bottom:16px;">
-        Accepts raw firmware `.bin`, memory dumps, stripped shellcode, `.rom`, `.elf`, or `.exe`
+      <p style="color:var(--text-muted, #94A3B8); font-size:14px; margin-bottom:16px;">
+        Accepts raw firmware <code>.bin</code>, memory dumps, stripped shellcode, <code>.rom</code>, <code>.elf</code>, or <code>.exe</code>
       </p>
       <div style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
-        <span style="font-size:12px; color:var(--text-tertiary);">Or load verified test sample:</span>
+        <span style="font-size:12px; color:var(--text-dim, #64748B);">Or load verified test sample:</span>
         <button class="sample-btn" onclick="event.stopPropagation(); loadSample('mixed')">Synthetic Mixed ISA</button>
         <button class="sample-btn" onclick="event.stopPropagation(); loadSample('x86')">x86-64 Native Bin</button>
         <button class="sample-btn" onclick="event.stopPropagation(); loadSample('firmware')">IoT ARM32 Firmware</button>
@@ -281,7 +299,7 @@
       </div>
       <div class="stat-box">
         <div class="stat-label">Mean Confidence</div>
-        <div class="stat-val" id="valMeanConf" style="color:var(--color-cyan);">0.0%</div>
+        <div class="stat-val" id="valMeanConf" style="color:#00F0FF;">0.0%</div>
       </div>
       <div class="stat-box">
         <div class="stat-label">Average Entropy</div>
@@ -290,12 +308,12 @@
     </div>
 
     <!-- Byte Ribbon (Interactive Minimap) -->
-    <div style="margin-bottom:8px; font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); display:flex; justify-content:space-between;">
+    <div style="margin-bottom:8px; font-family:var(--font-mono, monospace); font-size:12px; color:var(--text-dim, #64748B); display:flex; justify-content:space-between;">
       <span>INTERACTIVE STREAM MINIMAP (CLICK SEGMENT TO JUMP)</span>
       <span id="ribbonHoverInfo">Hover over segment</span>
     </div>
     <div class="byte-ribbon" id="byteRibbon">
-      <div style="width:100%; height:100%; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">
+      <div style="width:100%; height:100%; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono, monospace); font-size:11px; color:var(--text-dim, #64748B);">
         Awaiting binary stream input...
       </div>
     </div>
@@ -306,10 +324,10 @@
       <div class="pane-card">
         <div class="pane-title">
           <span>Contiguous Structural Segments</span>
-          <span style="font-size:11px; color:var(--text-tertiary);" id="segCounter">0 items</span>
+          <span style="font-size:11px; color:var(--text-dim, #64748B);" id="segCounter">0 items</span>
         </div>
         <div class="segment-table-scroll" id="segmentList">
-          <div style="padding:24px; text-align:center; color:var(--text-dim); font-family:var(--font-mono); font-size:12px;">
+          <div style="padding:24px; text-align:center; color:var(--text-dim, #64748B); font-family:var(--font-mono, monospace); font-size:12px;">
             No binary loaded. Click a sample above to begin.
           </div>
         </div>
@@ -319,10 +337,10 @@
       <div class="pane-card">
         <div class="pane-title">
           <span>Hexadecimal Synchronized Inspector</span>
-          <span style="font-size:11px; color:var(--color-cyan);" id="hexOffsetRange">Offset: 0x00000000</span>
+          <span style="font-size:11px; color:#00F0FF;" id="hexOffsetRange">Offset: 0x00000000</span>
         </div>
         <div class="hex-dump-scroll" id="hexView">
-          <div style="padding:24px; text-align:center; color:var(--text-dim); font-family:var(--font-mono); font-size:12px;">
+          <div style="padding:24px; text-align:center; color:var(--text-dim, #64748B); font-family:var(--font-mono, monospace); font-size:12px;">
             Hex bytes will render here upon analysis.
           </div>
         </div>
@@ -331,8 +349,8 @@
 
     <!-- Selected Segment Detail Inspector -->
     <div class="inspector-card" id="inspectorCard" style="display:none;">
-      <h3 style="font-size:18px; font-weight:700; margin-bottom:16px; color:#FFF; font-family:var(--font-mono);">
-        🔍 Segment Deep Diagnostic: <span id="diagSegName" style="color:var(--color-cyan);">CODE</span>
+      <h3 style="font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text, #FFF); font-family:var(--font-mono, monospace);">
+        🔍 Segment Deep Diagnostic: <span id="diagSegName" style="color:#00F0FF;">CODE</span>
       </h3>
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
         <div class="stat-box">
@@ -345,11 +363,11 @@
         </div>
         <div class="stat-box">
           <div class="stat-label">Predicted Architecture</div>
-          <div class="stat-val" style="font-size:16px; color:var(--color-amber);" id="diagArch">None</div>
+          <div class="stat-val" style="font-size:16px; color:#F59E0B;" id="diagArch">None</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Calibrated Confidence</div>
-          <div class="stat-val" style="font-size:16px; color:var(--color-emerald);" id="diagConf">0.0%</div>
+          <div class="stat-val" style="font-size:16px; color:#10B981;" id="diagConf">0.0%</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Shannon Entropy</div>
@@ -363,17 +381,20 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
-        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary);">KETHRAVAX CLIENT EXPLORER</div>
-      </div>
+  <!-- Site Footer -->
+  <footer class="site-footer" style="margin-top:48px; border-top:1px solid var(--border, #1E293B); padding:24px 0; background:var(--bg-alt, #0D1527);">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--text-dim, #64748B);">
+      <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
+      <div style="font-family:var(--font-mono, monospace); font-size:12px;">KETHRAVAX CLIENT EXPLORER</div>
     </div>
   </footer>
 
   <script>
+    function toggleTheme() {
+      const c = document.documentElement.getAttribute('data-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', c === 'dark' ? 'light' : 'dark');
+    }
+
     let currentData = null;
     let currentResult = null;
     let activeSegIndex = 0;
@@ -544,10 +565,10 @@
         const color = CATEGORY_COLORS[seg.category] || "#94A3B8";
 
         row.innerHTML = `
-          <span style="color:#FFF;">${hexStart}</span>
-          <span style="color:var(--text-tertiary);">${hexEnd}</span>
-          <span><span style="color:${color}; font-weight:600;">● ${seg.category}</span> ${seg.arch !== 'NONE' ? '<small style="color:var(--text-dim);">['+seg.arch+']</small>' : ''}</span>
-          <span style="color:var(--color-cyan); text-align:right;">${(seg.confidence * 100).toFixed(0)}%</span>
+          <span style="color:var(--text, #FFF);">${hexStart}</span>
+          <span style="color:var(--text-dim, #64748B);">${hexEnd}</span>
+          <span><span style="color:${color}; font-weight:600;">● ${seg.category}</span> ${seg.arch !== 'NONE' ? '<small style="color:var(--text-dim, #64748B);">['+seg.arch+']</small>' : ''}</span>
+          <span style="color:#00F0FF; text-align:right;">${(seg.confidence * 100).toFixed(0)}%</span>
         `;
         row.onclick = () => selectSegment(idx);
         list.appendChild(row);
@@ -561,7 +582,6 @@
       activeSegIndex = idx;
       const seg = currentResult.segments[idx];
 
-      // Update rows
       const rows = document.querySelectorAll(".seg-row");
       rows.forEach((r, i) => r.classList.toggle("active", i === idx));
 
@@ -615,16 +635,11 @@
       const buf = new Uint8Array(size);
 
       if (type === 'mixed') {
-        // 0..4096: x86_64 code
         for (let i = 0; i < 4096; i++) buf[i] = (i % 8 === 0) ? 0x55 : (i % 6 === 0) ? 0x48 : (i * 37) % 256;
-        // 4096..4160: Padding
         for (let i = 4096; i < 4160; i++) buf[i] = 0x00;
-        // 4160..7000: Strings
         const s = "KETHRAVAX_REVERSE_ENGINEERING_SUITE_SEC_INITIALIZE_KERNEL_TRAP_DEBUG_0x00_FATAL\x00";
         for (let i = 4160; i < 7000; i++) buf[i] = s.charCodeAt((i - 4160) % s.length);
-        // 7000..10000: Jump table
         for (let i = 7000; i < 10000; i += 4) { buf[i] = i & 0xFF; buf[i+1] = 0x20; buf[i+2] = 0x40; buf[i+3] = 0x00; }
-        // 10000..size: Compressed
         for (let i = 10000; i < size; i++) buf[i] = Math.floor(Math.random() * 256);
         analyzeStream("synthetic_mixed_payload.bin", buf);
       } else if (type === 'x86') {
@@ -644,14 +659,10 @@
       currentData = buf;
     }
 
-    function exportJSON() {
-      if (!currentResult) { alert("Please load a binary stream first."); return; }
-      const blob = new Blob([JSON.stringify(currentResult.segments, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `${currentResult.name}_kethravax_segments.json`;
-      a.click();
-    }
+    // Auto load mixed sample
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSample('mixed');
+    });
   </script>
 </body>
 </html>

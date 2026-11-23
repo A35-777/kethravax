@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog — KETHRAVAX</title>
+  <meta name="description" content="Release notes and version history for KETHRAVAX.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <span>KETHRAVAX</span>
+        <span class="brand-badge">CHANGELOG</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="benchmarks.html">Benchmarks</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="changelog.html" class="active">Changelog</a>
+        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:4rem 1.5rem; max-width:960px;">
+    <div class="hero-badge">VERSION HISTORY &amp; MILESTONES</div>
+    <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
+      Changelog
+    </h1>
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0;">
+      All notable changes to the KETHRAVAX architecture, CLI, models, and web explorer.
+    </p>
+
+    <!-- Version 0.1.0 -->
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2.5rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:1.5rem; font-weight:800; color:var(--text);">v0.1.0-BETA — Initial Research Release</h2>
+        <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--accent); background:var(--accent-glow); padding:3px 10px; border-radius:9999px; border:1px solid var(--accent);">November 2026</span>
+      </div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">
+        Initial open-source release of KETHRAVAX, introducing learned multi-class structural byte segmentation and ISA discovery for raw, headerless binary streams.
+      </p>
+      <h4 style="font-family:var(--font-mono); font-size:0.9rem; color:var(--text); margin-bottom:0.5rem;">Key Capabilities:</h4>
+      <ul style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; padding-left:1.5rem; margin-bottom:1rem;">
+        <li><strong>7-Class Structural Taxonomy:</strong> Discrete classification for CODE, DATA_STRING, DATA_TABLE, DATA_RAW, PADDING, COMPRESSED_OPAQUE, and UNKNOWN.</li>
+        <li><strong>Multi-ISA Support:</strong> Architecture discovery across x86-64, x86-32, ARM32 (ARM/Thumb), AArch64, MIPS32, and RISC-V.</li>
+        <li><strong>Exact Boundary Snapper:</strong> Dual-head model paired with null-discontinuity gradient snapping achieving 0.914 Boundary F1 at &tau;=4B.</li>
+        <li><strong>Interactive Web Explorer:</strong> Zero-cloud client-side reverse engineering workbench with synchronized hex dump, visual byte minimap, and diagnostics.</li>
+        <li><strong>Python SDK &amp; CLI:</strong> Full <code>kethravax analyze</code> and <code>kethravax inspect</code> command-line tooling.</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
+        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX CHANGELOG</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
