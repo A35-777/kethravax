@@ -14,7 +14,15 @@
   <meta property="og:url" content="https://kethravax.pages.dev/">
   <meta property="og:title" content="KETHRAVAX — Precision Structural Byte Segmentation">
   <meta property="og:description" content="Deconstruct raw binary streams without ELF, PE, or Mach-O headers. Powered by KethraSeg-Hybrid (48,256 params) on CPU.">
-  <meta property="og:image" content="https://kethravax.pages.dev/favicon.svg">
+  <meta property="og:image" content="https://kethravax.pages.dev/img/og-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="KETHRAVAX — Precision Structural Byte Segmentation">
+  <meta name="twitter:description" content="Multi-class structural segmentation and ISA discovery for raw binary byte streams on CPU. 100% offline.">
+  <meta name="twitter:image" content="https://kethravax.pages.dev/img/og-preview.png">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
@@ -102,98 +110,23 @@
           <div class="trust-item"><span class="trust-dot"></span> Calibrated Conformal Risk</div>
         </div>
 
-        <!-- Hero Showcase Window Mockup -->
+        <!-- Prominent Interactive Binary Workbench GIF Showcase -->
         <div class="hero-showcase">
-          <div class="showcase-header">
-            <div style="display:flex; align-items:center;">
-              <div class="window-dots">
-                <span class="dot dot-red"></span>
-                <span class="dot dot-yellow"></span>
-                <span class="dot dot-green"></span>
-              </div>
-              <span class="showcase-title">kethravax-inspector &bull; cortex_m4_firmware_v2.04.bin [64.0 KB]</span>
+          <div class="hero-showcase-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+              <span class="hero-showcase-title">KETHRAVAX Interactive Workbench &bull; cortex_m4_firmware_v2.04.bin</span>
             </div>
-            <span class="showcase-badge">0-BYTE RESIDUAL JITTER</span>
+            <span style="font-size: 0.7rem; color: var(--cyan); font-family: var(--font-mono); font-weight:700;">LIVE SCRUBBER</span>
           </div>
-
-          <div class="showcase-body">
-            <!-- Sidebar: Structural Hierarchy -->
-            <div class="showcase-sidebar">
-              <div class="sidebar-label">Segment Hierarchy</div>
-              
-              <div class="segment-nav-item active">
-                <span><span class="seg-color-indicator" style="background:var(--cat-code);"></span> 0x0000..0x0400</span>
-                <span style="color:var(--cyan); font-weight:700;">ARM32</span>
-              </div>
-              <div class="segment-nav-item">
-                <span><span class="seg-color-indicator" style="background:var(--cat-string);"></span> 0x0400..0x0680</span>
-                <span style="color:var(--amber);">STR</span>
-              </div>
-              <div class="segment-nav-item">
-                <span><span class="seg-color-indicator" style="background:var(--cat-table);"></span> 0x0680..0x0880</span>
-                <span style="color:var(--emerald);">TAB</span>
-              </div>
-              <div class="segment-nav-item">
-                <span><span class="seg-color-indicator" style="background:var(--cat-code);"></span> 0x0880..0x0E00</span>
-                <span style="color:var(--cyan); font-weight:700;">THUMB2</span>
-              </div>
-              <div class="segment-nav-item">
-                <span><span class="seg-color-indicator" style="background:var(--cat-padding);"></span> 0x0E00..0x1000</span>
-                <span style="color:var(--cat-padding);">PAD</span>
-              </div>
-            </div>
-
-            <!-- Content: Hex Dump & Disassembly -->
-            <div class="showcase-content">
-              <table class="hex-stream-table">
-                <tbody>
-                  <tr>
-                    <td class="hex-offset">0x000000</td>
-                    <td class="hex-bytes"><span class="code">80 B5 00 AF 82 B0 02 4B 1B 68 00 2B 01 D0 00 20</span></td>
-                    <td class="hex-disasm">push {r7, lr}; sub sp, #8</td>
-                  </tr>
-                  <tr>
-                    <td class="hex-offset">0x000010</td>
-                    <td class="hex-bytes"><span class="code">00 20 80 BD 00 00 00 00 70 47 00 00 08 B5 02 4C</span></td>
-                    <td class="hex-disasm">movs r0, #0; pop {r7, pc}</td>
-                  </tr>
-                  <tr>
-                    <td class="hex-offset">0x000400</td>
-                    <td class="hex-bytes"><span class="string">5B 42 4F 4F 54 5D 20 46 69 72 6D 77 61 72 65 20</span></td>
-                    <td class="hex-disasm">.asciz "[BOOT] Firmware "</td>
-                  </tr>
-                  <tr>
-                    <td class="hex-offset">0x000410</td>
-                    <td class="hex-bytes"><span class="string">76 32 2E 30 34 20 49 6E 69 74 69 61 6C 69 7A 69</span></td>
-                    <td class="hex-disasm">.asciz "v2.04 Initializi"</td>
-                  </tr>
-                  <tr>
-                    <td class="hex-offset">0x000680</td>
-                    <td class="hex-bytes"><span class="table">04 01 00 08 20 01 00 08 58 01 00 08 9C 01 00 08</span></td>
-                    <td class="hex-disasm">.word 0x08000104, ...</td>
-                  </tr>
-                  <tr>
-                    <td class="hex-offset">0x000E00</td>
-                    <td class="hex-bytes"><span class="padding">00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</span></td>
-                    <td class="hex-disasm">.fill 16, 1, 0x00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="hero-showcase-media">
+            <img src="img/studio-preview.gif" alt="KETHRAVAX Interactive Studio scrubbing binary stream with real-time disassembly and entropy plot" width="960" height="540">
           </div>
-
-          <div class="showcase-footer">
-            <div style="display:flex; align-items:center; gap:1.25rem;">
-              <span><strong>Neural Head:</strong> KethraSeg-Hybrid (48,256 params)</span>
-              <span><strong>Execution:</strong> 100% Offline CPU (23.8 ms)</span>
-            </div>
-            <div class="entropy-radar-bar">
-              <span>Entropy: 5.84 b/B</span>
-              <div class="entropy-bar-track">
-                <div class="entropy-bar-fill"></div>
-              </div>
-              <span style="color:var(--emerald); font-weight:700;">99.4% Conf</span>
-            </div>
+          <div class="hero-showcase-caption">
+            <span><strong>Real-time Binary Scrubber:</strong> Multi-class structural decomposition with exact 0-byte boundary snapping and multi-ISA disassembly.</span>
+            <span style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.75rem;">Model: KethraSeg-Hybrid (48,256 Params | 100% Offline CPU)</span>
           </div>
         </div>
 
@@ -424,14 +357,12 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
 
       <div class="tour-grid">
         <div class="tour-card">
-          <div class="tour-preview">
-            <span style="color:var(--rose);">Traditional Window Classifier:</span><br>
-            <code>[0x0000..0x001F] CODE (Blur) &bull; Jitter: &plusmn;32B</code><br><br>
-            <span style="color:var(--emerald);">KETHRAVAX Dual-Head Snapper:</span><br>
-            <code>[0x0000..0x0014] CODE &bull; Snap: 0B Residual</code>
+          <div class="tour-card-img-wrap">
+            <img src="img/tour-snapper.png" alt="Exact 0-Byte Boundary Snapper vs Sliding Window Blur" loading="lazy" width="900" height="450">
           </div>
-          <div class="tour-content">
-            <h3>Exact Boundary Snapper</h3>
+          <div class="tour-card-body">
+            <span class="tour-card-tag">Exact Boundary Snapper</span>
+            <h3>0-Byte Discontinuity Snapper</h3>
             <p>
               Sliding-window models smear boundaries across window strides. KETHRAVAX pairs a dilated 1D temporal convolution backbone with a byte-level null discontinuity gradient head to lock boundaries to the exact byte.
             </p>
@@ -444,13 +375,11 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
         </div>
 
         <div class="tour-card">
-          <div class="tour-preview">
-            <span style="color:var(--cyan);">Mixed Stream Decomposition:</span><br>
-            <code>0x0000: ARM32 Vector (0.994)</code><br>
-            <code>0x0400: Thumb-2 Engine (0.991)</code><br>
-            <code>0x0A00: x86_64 Payload (0.995)</code>
+          <div class="tour-card-img-wrap">
+            <img src="img/tour-mixed-isa.png" alt="Mixed-ISA Disentanglement Flow" loading="lazy" width="900" height="450">
           </div>
-          <div class="tour-content">
+          <div class="tour-card-body">
+            <span class="tour-card-tag">Multi-Architecture</span>
             <h3>Mixed-ISA Disentanglement</h3>
             <p>
               Modern firmware and polyglot exploits combine multiple instruction sets. KETHRAVAX predicts per-byte architecture probabilities, correctly identifying mode switches without symbol tables.
@@ -464,13 +393,11 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
         </div>
 
         <div class="tour-card">
-          <div class="tour-preview">
-            <span style="color:var(--purple);">Conformal Uncertainty Radar:</span><br>
-            <code>Entropy: 7.98 b/B (AES Ciphertext)</code><br>
-            <code>Coverage Set: {OPAQUE} [p &lt; 0.001]</code><br>
-            <code>Unknown Residual: 0.0%</code>
+          <div class="tour-card-img-wrap">
+            <img src="img/tour-conformal.png" alt="Conformal Risk Control & Uncertainty Radar" loading="lazy" width="900" height="450">
           </div>
-          <div class="tour-content">
+          <div class="tour-card-body">
+            <span class="tour-card-tag">Statistical Calibration</span>
             <h3>Conformal Risk Control</h3>
             <p>
               In security analysis, a confident wrong prediction is dangerous. KETHRAVAX outputs finite-sample calibrated prediction sets, guaranteeing user-specified error bounds on opaque or ambiguous regions.
