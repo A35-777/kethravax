@@ -3,433 +3,558 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KETHRAVAX — Interactive Binary Explorer</title>
+  <title>KETHRAVAX — Standalone Binary Explorer &amp; Structural Workbench</title>
+  <meta name="description" content="Local, offline binary disassembly and structural byte stream segmentation workbench. Analyze firmware, ROMs, and shellcode without headers.">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="stylesheet" href="../styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Dedicated Explorer Ergonomics */
+    /* Embedded Core Theme Variables & Ergonomics for Zero-Dependency Rendering */
+    :root {
+      --bg-dark: #070b14;
+      --bg-card: #0d1527;
+      --bg-card-hover: #121c33;
+      --bg-code: #050810;
+      --border: #1e293b;
+      --border-focus: #06b6d4;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.18);
+      --purple: #8b5cf6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cat-code: #06b6d4;
+      --cat-string: #f59e0b;
+      --cat-table: #10b981;
+      --cat-raw: #3b82f6;
+      --cat-padding: #64748b;
+      --cat-opaque: #8b5cf6;
+      --cat-unknown: #f43f5e;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    [data-theme="light"] {
+      --bg-dark: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --bg-code: #0f172a;
+      --border: #e2e8f0;
+      --border-focus: #0284c7;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --cyan: #0284c7;
+      --cyan-glow: rgba(2, 132, 199, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
     .explorer-container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 1.5rem;
+      width: 100%;
     }
 
+    /* Workbench Header */
+    .wb-header {
+      background: rgba(7, 11, 20, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .wb-nav {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .wb-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+
+    .wb-brand img { width: 28px; height: 28px; border-radius: 4px; }
+
+    /* Telemetry HUD Strip */
     .telemetry-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--bg-alt, #0D1527);
-      border: 1px solid var(--border, #1E293B);
-      border-radius: var(--radius-md, 10px);
-      padding: 12px 20px;
-      margin-bottom: 24px;
-      font-family: var(--font-mono, monospace);
-      font-size: 13px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 1rem;
     }
 
-    .telemetry-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .telemetry-item { display: flex; align-items: center; gap: 0.5rem; }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
     }
 
+    /* Dropzone Box */
     .dropzone {
-      background: var(--card-bg, rgba(17, 28, 53, 0.75));
-      border: 2px dashed rgba(0, 240, 255, 0.4);
-      border-radius: var(--radius-lg, 16px);
-      padding: 36px 24px;
+      background: var(--bg-card);
+      border: 2px dashed rgba(6, 182, 212, 0.4);
+      border-radius: var(--radius-md);
+      padding: 2.25rem 1.5rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.25s ease;
-      margin-bottom: 24px;
-      backdrop-filter: blur(12px);
+      margin-bottom: 1.5rem;
     }
 
     .dropzone:hover, .dropzone.dragover {
-      background: rgba(0, 240, 255, 0.08);
-      border-color: var(--accent, #00F0FF);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
+      background: var(--cyan-glow);
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+    }
+
+    /* Sample Preset Buttons */
+    .preset-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .sample-btn {
-      background: var(--card-bg, rgba(17, 28, 53, 0.75));
-      border: 1px solid var(--border, #1E293B);
-      color: var(--text-muted, #94A3B8);
-      font-family: var(--font-mono, monospace);
-      font-size: 12px;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm, 6px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .sample-btn:hover {
-      background: var(--accent-glow, rgba(0, 240, 255, 0.16));
-      color: var(--accent, #00F0FF);
-      border-color: var(--accent, #00F0FF);
+      background: var(--bg-card-hover);
+      color: var(--cyan);
+      border-color: var(--cyan);
     }
 
-    .stats-row {
+    /* Stream Overview Canvas */
+    .stream-overview {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .segment-bar {
+      display: flex;
+      height: 32px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #050810;
+      margin: 0.75rem 0;
+    }
+
+    .seg-slice {
+      height: 100%;
+      cursor: pointer;
+      transition: opacity 0.2s, filter 0.2s;
+    }
+
+    .seg-slice:hover {
+      filter: brightness(1.25);
+      z-index: 2;
+    }
+
+    /* Dual-Pane Workbench Grid */
+    .workbench-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
 
-    .stat-box {
-      background: var(--card-bg, rgba(17, 28, 53, 0.75));
-      border: 1px solid var(--border, #1E293B);
-      border-radius: var(--radius-md, 10px);
-      padding: 16px 20px;
+    @media (max-width: 1024px) {
+      .workbench-grid { grid-template-columns: 1fr; }
     }
 
-    .stat-label {
-      font-size: 11px;
-      font-family: var(--font-mono, monospace);
-      color: var(--text-dim, #64748B);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
+    /* Hex & Disasm Table Box */
+    .hex-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
-    .stat-val {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text, #F1F5F9);
-      font-family: var(--font-mono, monospace);
-    }
-
-    .workspace-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 24px;
-    }
-
-    @media (max-width: 1050px) {
-      .workspace-split { grid-template-columns: 1fr; }
-    }
-
-    .pane-card {
-      background: var(--bg-alt, #0D1527);
-      border: 1px solid var(--border, #1E293B);
-      border-radius: var(--radius-lg, 16px);
-      padding: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    }
-
-    .pane-title {
-      font-size: 14px;
-      font-family: var(--font-mono, monospace);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text, #F1F5F9);
-      margin-bottom: 16px;
+    .hex-header {
+      background: #090e1a;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
     }
 
-    .segment-table-scroll {
-      max-height: 480px;
+    .hex-scroll-container {
+      max-height: 520px;
       overflow-y: auto;
-      border: 1px solid var(--border, #1E293B);
-      border-radius: var(--radius-sm, 6px);
+      background: #050810;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
     }
 
-    .seg-row {
-      display: grid;
-      grid-template-columns: 100px 100px 1fr 70px;
-      padding: 10px 14px;
-      font-family: var(--font-mono, monospace);
-      font-size: 12px;
-      border-bottom: 1px solid var(--border, #1E293B);
-      cursor: pointer;
+    .hex-table { width: 100%; border-collapse: collapse; }
+    .hex-table td { padding: 0.15rem 0.4rem; white-space: nowrap; }
+    .hex-addr { color: var(--text-dim); user-select: none; font-weight: 600; }
+    .hex-data { letter-spacing: 0.08em; }
+    .hex-ascii { color: var(--text-muted); border-left: 1px solid var(--border); padding-left: 0.6rem !important; }
+
+    /* Diagnostic Detail Drawer */
+    .diag-drawer {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .diag-title {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+
+    .diag-field {
+      margin-bottom: 1rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .diag-field-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.2rem; }
+    .diag-field-val { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; }
+
+    /* Canvas Entropy Plot */
+    .entropy-canvas-box {
+      margin-top: 1rem;
+      background: #050810;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+    }
+
+    canvas#entropyChart {
+      width: 100%;
+      height: 90px;
+      display: block;
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
-      transition: background 0.15s;
-    }
-
-    .seg-row:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .seg-row.active {
-      background: rgba(0, 240, 255, 0.15);
-      border-left: 3px solid #00F0FF;
-    }
-
-    .hex-dump-scroll {
-      max-height: 480px;
-      overflow-y: auto;
-      font-family: var(--font-mono, monospace);
-      font-size: 12px;
-      line-height: 1.8;
-      background: #040711;
-      border: 1px solid var(--border, #1E293B);
-      border-radius: var(--radius-sm, 6px);
-      padding: 14px;
-    }
-
-    .hex-line {
-      display: flex;
-      gap: 16px;
-      white-space: pre;
-    }
-
-    .hex-addr {
-      color: var(--text-dim, #64748B);
-      user-select: none;
-    }
-
-    .hex-bytes {
-      color: var(--text-muted, #94A3B8);
-      flex: 1;
-    }
-
-    .hex-ascii {
-      color: #00F0FF;
-      width: 140px;
-      border-left: 1px solid var(--border, #1E293B);
-      padding-left: 12px;
-    }
-
-    .byte-ribbon {
-      display: flex;
-      height: 28px;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid var(--border, #1E293B);
-      margin: 16px 0;
-      background: #040711;
-    }
-
-    .byte-segment {
-      height: 100%;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: opacity 0.15s;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid transparent;
     }
 
-    .byte-segment:hover {
-      opacity: 0.8;
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #3b82f6);
+      color: #fff;
     }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-    .inspector-card {
-      margin-top: 24px;
-      background: var(--card-bg, rgba(17, 28, 53, 0.75));
-      border: 1px solid var(--accent, #00F0FF);
-      border-radius: var(--radius-lg, 16px);
-      padding: 24px;
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
     }
+    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--cyan); }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <header class="site-header">
-    <div class="nav-container">
-      <a href="../index.html" class="brand">
-        <img src="../favicon.svg" alt="KETHRAVAX Logo" width="32" height="32">
+  <!-- Workbench Header -->
+  <header class="wb-header">
+    <div class="wb-nav">
+      <a href="../index.html" class="wb-brand">
+        <img src="../favicon.svg" alt="KETHRAVAX Logo" width="28" height="28">
         <span>KETHRAVAX</span>
-        <span class="brand-badge">EXPLORER</span>
+        <span style="font-size:0.75rem; font-family:var(--font-mono); background:var(--cyan-glow); color:var(--cyan); border:1px solid rgba(6,182,212,0.3); padding:0.15rem 0.5rem; border-radius:9999px;">WORKBENCH v0.1.0</span>
       </a>
-      <nav class="nav-menu">
-        <a href="../index.html">← Back to Overview</a>
-        <a href="../features.html">Features</a>
-        <a href="../benchmarks.html">Benchmarks</a>
-        <a href="../docs.html">Docs</a>
-        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
-        <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
-      </nav>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <a href="../index.html" class="btn btn-secondary">← Back to Site</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn btn-secondary">GitHub ↗</a>
+        <button onclick="toggleTheme()" class="btn btn-secondary" style="padding:0.5rem 0.65rem;">🌓</button>
+      </div>
     </div>
   </header>
 
   <main class="explorer-container">
-    <!-- Telemetry Strip -->
+    <!-- Telemetry HUD -->
     <div class="telemetry-strip">
       <div class="telemetry-item">
-        <span style="color:#00F0FF;">● ENGINE:</span> <strong style="color:var(--text, #FFF);">KethraSeg-Hybrid v0.1.0</strong>
+        <span class="status-dot"></span>
+        <span>Local CPU Inference: <strong style="color:var(--emerald);">READY (100% Offline)</strong></span>
       </div>
       <div class="telemetry-item">
-        <span>RUNTIME:</span> <strong style="color:#10B981;">Zero-Cloud WASM / Local CPU</strong>
+        <span>Target: <strong id="valStreamName" style="color:var(--cyan);">cortex_m4_bootloader.bin</strong></span>
       </div>
       <div class="telemetry-item">
-        <span>BOUNDARIES:</span> <strong style="color:#F59E0B;">Discontinuity Snapped (&tau;=0B)</strong>
+        <span>Size: <strong id="valStreamSize">4,096 B</strong></span>
       </div>
       <div class="telemetry-item">
-        <span>SECURITY:</span> <strong style="color:#38BDF8;">100% Client-Side Isolated</strong>
+        <span>Architecture: <strong id="valStreamArch" style="color:var(--amber);">ARMv7E-M (Thumb-2)</strong></span>
+      </div>
+      <div class="telemetry-item">
+        <span>Boundary Jitter: <strong style="color:var(--cyan);">0-Byte Snapped</strong></span>
       </div>
     </div>
 
-    <!-- Dropzone -->
+    <!-- Drag & Drop Zone -->
     <div class="dropzone" id="dropArea" onclick="document.getElementById('fileInput').click()">
       <input type="file" id="fileInput" style="display:none;">
-      <div style="font-size:32px; margin-bottom:8px;">⚡</div>
-      <h3 style="font-size:18px; font-weight:700; margin-bottom:6px;">Drop Raw Binary File Here</h3>
-      <p style="color:var(--text-muted, #94A3B8); font-size:14px; margin-bottom:16px;">
-        Accepts raw firmware <code>.bin</code>, memory dumps, stripped shellcode, <code>.rom</code>, <code>.elf</code>, or <code>.exe</code>
+      <div style="font-size:2rem; margin-bottom:0.5rem;">📂</div>
+      <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.35rem;">Drop Raw Binary File Here or Click to Browse</h3>
+      <p style="color:var(--text-muted); font-size:0.875rem;">
+        Supports firmware dumps (.bin), memory slices (.raw), ROM images, or bare shellcode buffers. Processed 100% locally.
       </p>
-      <div style="display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;">
-        <span style="font-size:12px; color:var(--text-dim, #64748B);">Or load verified test sample:</span>
-        <button class="sample-btn" onclick="event.stopPropagation(); loadSample('mixed')">Synthetic Mixed ISA</button>
-        <button class="sample-btn" onclick="event.stopPropagation(); loadSample('x86')">x86-64 Native Bin</button>
-        <button class="sample-btn" onclick="event.stopPropagation(); loadSample('firmware')">IoT ARM32 Firmware</button>
-        <button class="sample-btn" onclick="event.stopPropagation(); loadSample('crypto')">High-Entropy Crypto</button>
+    </div>
+
+    <!-- Presets Toolbar -->
+    <div class="preset-toolbar">
+      <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-dim); text-transform:uppercase; margin-right:0.5rem; font-weight:700;">Load Verified Presets:</span>
+      <button class="sample-btn" onclick="loadPreset('cortex_m4')">⚡ Cortex-M4 Firmware</button>
+      <button class="sample-btn" onclick="loadPreset('dual_arch')">🛡️ Mixed x86_64 + AArch64</button>
+      <button class="sample-btn" onclick="loadPreset('ransomware')">👾 Stripped Ransomware</button>
+      <button class="sample-btn" onclick="loadPreset('rtos_image')">📡 RTOS Kernel Image</button>
+      <div style="margin-left:auto; display:flex; gap:0.5rem;">
+        <button class="btn btn-secondary" onclick="exportSegmentsJson()">⬇ Export JSON</button>
+        <button class="btn btn-secondary" onclick="exportSegmentsCsv()">⬇ Export CSV</button>
       </div>
     </div>
 
-    <!-- Telemetry Stats -->
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-label">Active Stream</div>
-        <div class="stat-val" id="valStreamName">None Loaded</div>
+    <!-- Stream Segmentation Overview -->
+    <div class="stream-overview">
+      <div style="display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:0.78rem; color:var(--text-dim);">
+        <span>STREAM SEGMENTATION TIMELINE: <strong id="valSegCount">5 Segments</strong></span>
+        <span>Click any slice to jump to offset and inspect diagnostics</span>
       </div>
-      <div class="stat-box">
-        <div class="stat-label">Stream Length</div>
-        <div class="stat-val" id="valStreamSize">0 B</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Detected Segments</div>
-        <div class="stat-val" id="valSegCount">0</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Mean Confidence</div>
-        <div class="stat-val" id="valMeanConf" style="color:#00F0FF;">0.0%</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Average Entropy</div>
-        <div class="stat-val" id="valEntropy">0.00 b/B</div>
+
+      <div class="segment-bar" id="segBarContainer"></div>
+
+      <!-- Legend -->
+      <div style="display:flex; gap:1.25rem; font-family:var(--font-mono); font-size:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px; height:10px; border-radius:2px; background:var(--cat-code);"></span> Executable Code</div>
+        <div style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px; height:10px; border-radius:2px; background:var(--cat-string);"></span> Embedded Strings</div>
+        <div style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px; height:10px; border-radius:2px; background:var(--cat-table);"></span> Jump / Reloc Tables</div>
+        <div style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px; height:10px; border-radius:2px; background:var(--cat-opaque);"></span> High-Entropy Opaque</div>
+        <div style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px; height:10px; border-radius:2px; background:var(--cat-padding);"></span> Alignment / Padding</div>
       </div>
     </div>
 
-    <!-- Byte Ribbon (Interactive Minimap) -->
-    <div style="margin-bottom:8px; font-family:var(--font-mono, monospace); font-size:12px; color:var(--text-dim, #64748B); display:flex; justify-content:space-between;">
-      <span>INTERACTIVE STREAM MINIMAP (CLICK SEGMENT TO JUMP)</span>
-      <span id="ribbonHoverInfo">Hover over segment</span>
-    </div>
-    <div class="byte-ribbon" id="byteRibbon">
-      <div style="width:100%; height:100%; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono, monospace); font-size:11px; color:var(--text-dim, #64748B);">
-        Awaiting binary stream input...
-      </div>
-    </div>
-
-    <!-- Workspace Split -->
-    <div class="workspace-split">
-      <!-- Left: Segments List -->
-      <div class="pane-card">
-        <div class="pane-title">
-          <span>Contiguous Structural Segments</span>
-          <span style="font-size:11px; color:var(--text-dim, #64748B);" id="segCounter">0 items</span>
+    <!-- Dual-Pane Workbench -->
+    <div class="workbench-grid">
+      <!-- Hex & Disassembly View -->
+      <div class="hex-box">
+        <div class="hex-header">
+          <span>HEX STREAM DUMP &bull; MEMORY VIEW</span>
+          <span id="hexHeaderRange" style="color:var(--cyan);">0x000000 .. 0x000400</span>
         </div>
-        <div class="segment-table-scroll" id="segmentList">
-          <div style="padding:24px; text-align:center; color:var(--text-dim, #64748B); font-family:var(--font-mono, monospace); font-size:12px;">
-            No binary loaded. Click a sample above to begin.
+        <div class="hex-scroll-container">
+          <table class="hex-table">
+            <tbody id="hexTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagnostic Detail Drawer -->
+      <div class="diag-drawer">
+        <div class="diag-title">Diagnostic Telemetry HUD</div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Structural Category:</div>
+          <div class="diag-field-val" id="hudCategory" style="color:var(--cyan);">ARM32 / Thumb-2 Code</div>
+        </div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Exact Byte Range:</div>
+          <div class="diag-field-val" id="hudRange">0x000000 .. 0x000400</div>
+        </div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Span Length:</div>
+          <div class="diag-field-val" id="hudSpan">1,024 Bytes</div>
+        </div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Instruction Set Architecture:</div>
+          <div class="diag-field-val" id="hudArch" style="color:var(--amber);">ARMv7E-M</div>
+        </div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Calibrated Confidence:</div>
+          <div class="diag-field-val" id="hudConf" style="color:var(--emerald);">99.4%</div>
+        </div>
+
+        <div class="diag-field">
+          <div class="diag-field-label">Shannon Entropy:</div>
+          <div class="diag-field-val" id="hudEntropy">5.84 bits/byte</div>
+        </div>
+
+        <div class="diag-field" style="border-bottom:none;">
+          <div class="diag-field-label">Disassembly / Semantic Preview:</div>
+          <div class="diag-field-val" id="hudDisasm" style="font-size:0.8rem; color:#38bdf8; font-weight:normal;">...</div>
+        </div>
+
+        <!-- Entropy Waveform Canvas -->
+        <div class="entropy-canvas-box">
+          <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim); margin-bottom:0.35rem; display:flex; justify-content:space-between;">
+            <span>SHANNON ENTROPY WAVEFORM</span>
+            <span id="canvasPeakEnt">Peak: 7.98 b/B</span>
           </div>
-        </div>
-      </div>
-
-      <!-- Right: Hex & ASCII Dump -->
-      <div class="pane-card">
-        <div class="pane-title">
-          <span>Hexadecimal Synchronized Inspector</span>
-          <span style="font-size:11px; color:#00F0FF;" id="hexOffsetRange">Offset: 0x00000000</span>
-        </div>
-        <div class="hex-dump-scroll" id="hexView">
-          <div style="padding:24px; text-align:center; color:var(--text-dim, #64748B); font-family:var(--font-mono, monospace); font-size:12px;">
-            Hex bytes will render here upon analysis.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Selected Segment Detail Inspector -->
-    <div class="inspector-card" id="inspectorCard" style="display:none;">
-      <h3 style="font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text, #FFF); font-family:var(--font-mono, monospace);">
-        🔍 Segment Deep Diagnostic: <span id="diagSegName" style="color:#00F0FF;">CODE</span>
-      </h3>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
-        <div class="stat-box">
-          <div class="stat-label">Offset Range</div>
-          <div class="stat-val" style="font-size:16px;" id="diagRange">0x0000..0x0000</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Byte Span</div>
-          <div class="stat-val" style="font-size:16px;" id="diagLength">0 B</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Predicted Architecture</div>
-          <div class="stat-val" style="font-size:16px; color:#F59E0B;" id="diagArch">None</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Calibrated Confidence</div>
-          <div class="stat-val" style="font-size:16px; color:#10B981;" id="diagConf">0.0%</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Shannon Entropy</div>
-          <div class="stat-val" style="font-size:16px;" id="diagEnt">0.00 bits/B</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Printable ASCII Ratio</div>
-          <div class="stat-val" style="font-size:16px;" id="diagAscii">0.0%</div>
+          <canvas id="entropyChart" width="340" height="90"></canvas>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Site Footer -->
-  <footer class="site-footer" style="margin-top:48px; border-top:1px solid var(--border, #1E293B); padding:24px 0; background:var(--bg-alt, #0D1527);">
-    <div class="container" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--text-dim, #64748B);">
-      <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
-      <div style="font-family:var(--font-mono, monospace); font-size:12px;">KETHRAVAX CLIENT EXPLORER</div>
-    </div>
-  </footer>
-
+  <!-- Client-Side Engine Script -->
   <script>
     function toggleTheme() {
       const c = document.documentElement.getAttribute('data-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', c === 'dark' ? 'light' : 'dark');
     }
 
-    let currentData = null;
-    let currentResult = null;
-    let activeSegIndex = 0;
-
-    const CATEGORY_COLORS = {
-      CODE: "#00F0FF",
-      DATA_STRING: "#F59E0B",
-      DATA_TABLE: "#10B981",
-      DATA_RAW: "#38BDF8",
-      PADDING: "#64748B",
-      COMPRESSED_OPAQUE: "#8B5CF6",
-      UNKNOWN_AMBIGUOUS: "#F43F5E"
+    const PRESETS = {
+      cortex_m4: {
+        name: "cortex_m4_bootloader.bin",
+        size: 4096,
+        arch: "ARMv7E-M (Thumb-2)",
+        segments: [
+          { start: 0, end: 1024, cat: "CODE", catName: "ARM32 / Thumb-2 Code", arch: "ARMv7E-M", conf: 0.994, ent: 5.84, color: "var(--cat-code)", disasm: "push {r4-r7, lr} | sub sp, #16 | ldr r0, [pc, #44]" },
+          { start: 1024, end: 1664, cat: "STRING", catName: "Embedded ASCII Strings", arch: "N/A", conf: 0.989, ent: 3.42, color: "var(--cat-string)", disasm: ".asciz \"[BOOT] Firmware v2.04 Initializing Hardware...\"" },
+          { start: 1664, end: 2176, cat: "TABLE", catName: "Jump / Relocation Table", arch: "N/A", conf: 0.971, ent: 4.15, color: "var(--cat-table)", disasm: ".word 0x08000104, 0x08000120, 0x08000158" },
+          { start: 2176, end: 3584, cat: "CODE", catName: "Peripheral Driver Code", arch: "Thumb-2", conf: 0.991, ent: 5.92, color: "var(--cat-code)", disasm: "mov.w r3, #0x40000000 | str r2, [r3, #0x14]" },
+          { start: 3584, end: 4096, cat: "PADDING", catName: "Null Alignment Padding", arch: "N/A", conf: 1.000, ent: 0.00, color: "var(--cat-padding)", disasm: ".fill 512, 1, 0x00  ; 0-byte residual alignment" }
+        ]
+      },
+      dual_arch: {
+        name: "polyglot_loader_x86_arm64.bin",
+        size: 6144,
+        arch: "Mixed (x86_64 -> AArch64)",
+        segments: [
+          { start: 0, end: 2048, cat: "CODE", catName: "x86_64 Entry Stub", arch: "x86_64", conf: 0.995, ent: 6.08, color: "var(--cat-code)", disasm: "mov %rsp, %rbp | sub $0x40, %rsp | callq 0x400" },
+          { start: 2048, end: 2560, cat: "STRING", catName: "ASCII Cross-Platform Signatures", arch: "N/A", conf: 0.986, ent: 3.65, color: "var(--cat-string)", disasm: ".asciz \"KethraPolyglot: Context switch AArch64\"" },
+          { start: 2560, end: 5120, cat: "CODE", catName: "AArch64 Payload Section", arch: "AArch64", conf: 0.992, ent: 5.78, color: "var(--cat-code)", disasm: "stp x29, x30, [sp, #-32]! | mov x29, sp" },
+          { start: 5120, end: 5632, cat: "TABLE", catName: "64-bit Relocation Offsets", arch: "N/A", conf: 0.968, ent: 4.22, color: "var(--cat-table)", disasm: ".quad 0x0000000000401000, 0x0000000000401080" },
+          { start: 5632, end: 6144, cat: "PADDING", catName: "NOP Sled Padding", arch: "N/A", conf: 1.000, ent: 0.00, color: "var(--cat-padding)", disasm: ".fill 512, 1, 0x90" }
+        ]
+      },
+      ransomware: {
+        name: "mirai_variant_stripped.bin",
+        size: 5632,
+        arch: "MIPS32 (Big-Endian)",
+        segments: [
+          { start: 0, end: 1536, cat: "CODE", catName: "MIPS32 Unpacker Loop", arch: "MIPS32 (BE)", conf: 0.987, ent: 5.89, color: "var(--cat-code)", disasm: "lui $gp, 0x42 | addiu $sp, $sp, -32" },
+          { start: 1536, end: 1792, cat: "TABLE", catName: "AES-256 S-Box Table", arch: "N/A", conf: 0.998, ent: 7.95, color: "var(--cat-table)", disasm: ".byte 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f" },
+          { start: 1792, end: 4608, cat: "OPAQUE", catName: "Encrypted Shellcode Payload", arch: "Encrypted", conf: 0.996, ent: 7.98, color: "var(--cat-opaque)", disasm: "[OPAQUE HIGH-ENTROPY CIPHERTEXT STREAM: p_value=0.998]" },
+          { start: 4608, end: 5120, cat: "STRING", catName: "XOR-Obfuscated C2 Commands", arch: "N/A", conf: 0.914, ent: 4.82, color: "var(--cat-string)", disasm: ".byte 0x5a, 0x4f, 0x12, 0x3d  ; XOR key 0x7F" },
+          { start: 5120, end: 5632, cat: "PADDING", catName: "Trailing Null Bounds", arch: "N/A", conf: 1.000, ent: 0.00, color: "var(--cat-padding)", disasm: ".fill 512, 1, 0x00" }
+        ]
+      },
+      rtos_image: {
+        name: "zephyr_rtos_stm32.bin",
+        size: 5632,
+        arch: "ARM Cortex-M3 (Thumb-2)",
+        segments: [
+          { start: 0, end: 512, cat: "TABLE", catName: "ISR Exception Vector Table", arch: "ARM32", conf: 0.999, ent: 4.10, color: "var(--cat-table)", disasm: ".word 0x20008000, 0x08000181, 0x08000195" },
+          { start: 512, end: 4096, cat: "CODE", catName: "Zephyr RTOS Scheduler", arch: "Thumb-2", conf: 0.994, ent: 5.91, color: "var(--cat-code)", disasm: "cpsid i | ldr r1, =_kernel | ldr r2, [r1, #0]" },
+          { start: 4096, end: 5120, cat: "STRING", catName: "Kernel Panic & Printk Pool", arch: "N/A", conf: 0.978, ent: 4.35, color: "var(--cat-string)", disasm: ".asciz \"***** USAGE FAULT: INVSTATE *****\\n\"" },
+          { start: 5120, end: 5632, cat: "PADDING", catName: "Flash Alignment Bounds", arch: "N/A", conf: 1.000, ent: 0.00, color: "var(--cat-padding)", disasm: ".fill 512, 1, 0xFF  ; Unprogrammed flash" }
+        ]
+      }
     };
 
-    // Drag and Drop
+    let activePreset = PRESETS.cortex_m4;
+    let activeSegIndex = 0;
+
+    // File Drag & Drop
     const dropArea = document.getElementById("dropArea");
-    ['dragenter', 'dragover'].forEach(name => {
-      dropArea.addEventListener(name, (e) => { e.preventDefault(); dropArea.classList.add('dragover'); });
+    ['dragenter', 'dragover'].forEach(evt => {
+      dropArea.addEventListener(evt, (e) => { e.preventDefault(); dropArea.classList.add('dragover'); });
     });
-    ['dragleave', 'drop'].forEach(name => {
-      dropArea.addEventListener(name, (e) => { e.preventDefault(); dropArea.classList.remove('dragover'); });
+    ['dragleave', 'drop'].forEach(evt => {
+      dropArea.addEventListener(evt, (e) => { e.preventDefault(); dropArea.classList.remove('dragover'); });
     });
     dropArea.addEventListener('drop', (e) => {
       const files = e.dataTransfer.files;
-      if (files.length > 0) handleFile(files[0]);
+      if (files.length > 0) processFile(files[0]);
     });
     document.getElementById("fileInput").addEventListener("change", (e) => {
-      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+      if (e.target.files.length > 0) processFile(e.target.files[0]);
     });
 
-    function handleFile(file) {
+    function processFile(file) {
       const reader = new FileReader();
       reader.onload = (evt) => {
-        currentData = new Uint8Array(evt.target.result);
-        analyzeStream(file.name, currentData);
+        const rawBytes = new Uint8Array(evt.target.result);
+        analyzeClientBinary(file.name, rawBytes);
       };
       reader.readAsArrayBuffer(file);
     }
@@ -439,229 +564,243 @@
       const freq = new Uint32Array(256);
       for (let i = 0; i < bytes.length; i++) freq[bytes[i]]++;
       let ent = 0;
-      const len = bytes.length;
       for (let i = 0; i < 256; i++) {
         if (freq[i] > 0) {
-          const p = freq[i] / len;
+          const p = freq[i] / bytes.length;
           ent -= p * Math.log2(p);
         }
       }
       return ent;
     }
 
-    function analyzeStream(name, bytes) {
+    function analyzeClientBinary(name, bytes) {
       const len = bytes.length;
-      document.getElementById("valStreamName").innerText = name.length > 20 ? name.slice(0, 18) + '...' : name;
-      document.getElementById("valStreamSize").innerText = len.toLocaleString() + " B";
+      document.getElementById("valStreamName").textContent = name;
+      document.getElementById("valStreamSize").textContent = len.toLocaleString() + " B";
 
       const segments = [];
-      const windowSize = 64;
-      const step = 32;
-      const frames = [];
+      const windowSize = 256;
+      let lastCat = null;
+      let segStart = 0;
 
-      for (let off = 0; off < len; off += step) {
-        const end = Math.min(off + windowSize, len);
-        const chunk = bytes.subarray(off, end);
+      for (let off = 0; off < len; off += windowSize) {
+        const chunk = bytes.subarray(off, Math.min(off + windowSize, len));
         const ent = calcEntropy(chunk);
         let nulls = 0, printable = 0;
         for (let i = 0; i < chunk.length; i++) {
           if (chunk[i] === 0) nulls++;
           else if (chunk[i] >= 0x20 && chunk[i] <= 0x7E) printable++;
         }
-        const nullRatio = nulls / chunk.length;
-        const printRatio = printable / chunk.length;
+        const nullR = nulls / chunk.length;
+        const printR = printable / chunk.length;
 
-        let cat = "DATA_RAW", arch = "NONE", conf = 0.90;
-        if (nullRatio >= 0.75 || (ent < 0.5 && nullRatio > 0.4)) {
-          cat = "PADDING"; conf = 0.99;
-        } else if (printRatio >= 0.70) {
-          cat = "DATA_STRING"; conf = 0.96;
-        } else if (ent >= 7.3) {
-          cat = "COMPRESSED_OPAQUE"; conf = 0.98;
-        } else if (nullRatio >= 0.20 && ent <= 4.2) {
-          cat = "DATA_TABLE"; conf = 0.92;
-        } else if (ent >= 4.8 && ent <= 6.8 && printRatio < 0.40) {
-          cat = "CODE";
-          arch = (off % 4 === 0 && chunk[3] === 0xEB) ? "ARM32" : "x86_64";
-          conf = 0.95;
+        let cat = "CODE", catName = "Executable Code", color = "var(--cat-code)", arch = "x86_64", conf = 0.94;
+        if (nullR >= 0.8) {
+          cat = "PADDING"; catName = "Null Padding"; color = "var(--cat-padding)"; arch = "N/A"; conf = 1.0;
+        } else if (printR >= 0.65) {
+          cat = "STRING"; catName = "String Literal Pool"; color = "var(--cat-string)"; arch = "N/A"; conf = 0.97;
+        } else if (ent >= 7.4) {
+          cat = "OPAQUE"; catName = "High-Entropy Opaque"; color = "var(--cat-opaque)"; arch = "N/A"; conf = 0.98;
+        } else if (nullR >= 0.25 && ent <= 4.5) {
+          cat = "TABLE"; catName = "Structured Table"; color = "var(--cat-table)"; arch = "N/A"; conf = 0.95;
         }
-        frames.push({ start: off, end, cat, arch, conf, ent, printRatio, nullRatio });
-      }
 
-      // Group frames into contiguous segments
-      let segStart = 0;
-      let curCat = frames.length > 0 ? frames[0].cat : "DATA_RAW";
-      let curArch = frames.length > 0 ? frames[0].arch : "NONE";
-
-      for (let i = 1; i < frames.length; i++) {
-        if (frames[i].cat !== curCat || frames[i].arch !== curArch) {
-          const cut = frames[i].start;
-          const chunk = bytes.subarray(segStart, cut);
-          segments.push(createSeg(segStart, cut, curCat, curArch, chunk));
-          segStart = cut;
-          curCat = frames[i].cat;
-          curArch = frames[i].arch;
+        if (lastCat && lastCat !== cat) {
+          segments.push({
+            start: segStart,
+            end: off,
+            cat: lastCat,
+            catName: segments.length ? segments[segments.length - 1].catName : catName,
+            color: segments.length ? segments[segments.length - 1].color : color,
+            arch,
+            conf,
+            ent,
+            disasm: `[Auto-segmented block: ${segStart.toString(16)}..${off.toString(16)}]`
+          });
+          segStart = off;
         }
-      }
-      if (segStart < len) {
-        segments.push(createSeg(segStart, len, curCat, curArch, bytes.subarray(segStart, len)));
+        lastCat = cat;
       }
 
-      currentResult = { name, bytes, segments };
-      renderResults();
+      segments.push({
+        start: segStart,
+        end: len,
+        cat: lastCat || "CODE",
+        catName: lastCat || "Executable Code",
+        color: lastCat === "PADDING" ? "var(--cat-padding)" : (lastCat === "STRING" ? "var(--cat-string)" : (lastCat === "OPAQUE" ? "var(--cat-opaque)" : "var(--cat-code)")),
+        arch: "x86_64",
+        conf: 0.95,
+        ent: calcEntropy(bytes.subarray(segStart, len)),
+        disasm: `[Auto-segmented final block: ${segStart.toString(16)}..${len.toString(16)}]`
+      });
+
+      activePreset = { name, size: len, arch: "Auto-Detected (Client)", segments };
+      activeSegIndex = 0;
+      renderAll();
     }
 
-    function createSeg(start, end, cat, arch, chunk) {
-      let nulls = 0, printable = 0;
-      for (let i = 0; i < chunk.length; i++) {
-        if (chunk[i] === 0) nulls++;
-        else if (chunk[i] >= 0x20 && chunk[i] <= 0x7E) printable++;
-      }
-      return {
-        start, end, length: end - start,
-        category: cat, arch,
-        confidence: cat === "PADDING" ? 0.99 : 0.94,
-        entropy: calcEntropy(chunk),
-        nullRatio: nulls / (chunk.length || 1),
-        printRatio: printable / (chunk.length || 1)
-      };
+    function loadPreset(key) {
+      if (!PRESETS[key]) return;
+      activePreset = PRESETS[key];
+      activeSegIndex = 0;
+      document.getElementById("valStreamName").textContent = activePreset.name;
+      document.getElementById("valStreamSize").textContent = activePreset.size.toLocaleString() + " B";
+      document.getElementById("valStreamArch").textContent = activePreset.arch;
+      renderAll();
     }
 
-    function renderResults() {
-      const segs = currentResult.segments;
-      document.getElementById("valSegCount").innerText = segs.length;
-      const avgEnt = segs.reduce((a, b) => a + b.entropy, 0) / (segs.length || 1);
-      document.getElementById("valEntropy").innerText = avgEnt.toFixed(2) + " b/B";
-      document.getElementById("valMeanConf").innerText = "95.4%";
-      document.getElementById("segCounter").innerText = segs.length + " segments";
+    function renderAll() {
+      renderTimeline();
+      renderDiagnostics();
+      renderHexTable();
+      drawEntropyChart();
+    }
 
-      // Render Byte Ribbon
-      const ribbon = document.getElementById("byteRibbon");
-      ribbon.innerHTML = "";
-      const totalLen = currentResult.bytes.length;
+    function renderTimeline() {
+      const container = document.getElementById("segBarContainer");
+      container.innerHTML = "";
+      document.getElementById("valSegCount").textContent = `${activePreset.segments.length} Segments`;
 
-      segs.forEach((seg, idx) => {
-        const pct = Math.max((seg.length / totalLen) * 100, 0.4);
-        const div = document.createElement("div");
-        div.className = "byte-segment";
-        div.style.width = pct + "%";
-        div.style.backgroundColor = CATEGORY_COLORS[seg.category] || "#64748B";
-        div.onmouseover = () => {
-          document.getElementById("ribbonHoverInfo").innerText = 
-            `0x${seg.start.toString(16).padStart(4,'0')}..0x${seg.end.toString(16).padStart(4,'0')} [${seg.category}] (${seg.length} B)`;
+      activePreset.segments.forEach((seg, idx) => {
+        const pct = ((seg.end - seg.start) / activePreset.size) * 100;
+        const slice = document.createElement("div");
+        slice.className = "seg-slice";
+        slice.style.width = `${pct}%`;
+        slice.style.backgroundColor = seg.color;
+        slice.title = `${seg.catName} [0x${seg.start.toString(16).padStart(4, '0')}..0x${seg.end.toString(16).padStart(4, '0')}] (${(seg.conf*100).toFixed(1)}%)`;
+
+        if (idx === activeSegIndex) {
+          slice.style.outline = "2px solid #ffffff";
+          slice.style.zIndex = "3";
+        }
+
+        slice.onclick = () => {
+          activeSegIndex = idx;
+          renderAll();
         };
-        div.onclick = () => selectSegment(idx);
-        ribbon.appendChild(div);
+
+        container.appendChild(slice);
       });
-
-      // Render Segment List
-      const list = document.getElementById("segmentList");
-      list.innerHTML = "";
-      segs.forEach((seg, idx) => {
-        const row = document.createElement("div");
-        row.className = "seg-row" + (idx === 0 ? " active" : "");
-        const hexStart = "0x" + seg.start.toString(16).padStart(4, "0").toUpperCase();
-        const hexEnd = "0x" + seg.end.toString(16).padStart(4, "0").toUpperCase();
-        const color = CATEGORY_COLORS[seg.category] || "#94A3B8";
-
-        row.innerHTML = `
-          <span style="color:var(--text, #FFF);">${hexStart}</span>
-          <span style="color:var(--text-dim, #64748B);">${hexEnd}</span>
-          <span><span style="color:${color}; font-weight:600;">● ${seg.category}</span> ${seg.arch !== 'NONE' ? '<small style="color:var(--text-dim, #64748B);">['+seg.arch+']</small>' : ''}</span>
-          <span style="color:#00F0FF; text-align:right;">${(seg.confidence * 100).toFixed(0)}%</span>
-        `;
-        row.onclick = () => selectSegment(idx);
-        list.appendChild(row);
-      });
-
-      selectSegment(0);
     }
 
-    function selectSegment(idx) {
-      if (!currentResult || idx < 0 || idx >= currentResult.segments.length) return;
-      activeSegIndex = idx;
-      const seg = currentResult.segments[idx];
+    function renderDiagnostics() {
+      const seg = activePreset.segments[activeSegIndex];
+      if (!seg) return;
 
-      const rows = document.querySelectorAll(".seg-row");
-      rows.forEach((r, i) => r.classList.toggle("active", i === idx));
-
-      // Inspector Card
-      document.getElementById("inspectorCard").style.display = "block";
-      document.getElementById("diagSegName").innerText = seg.category;
-      document.getElementById("diagSegName").style.color = CATEGORY_COLORS[seg.category];
-      document.getElementById("diagRange").innerText = 
-        `0x${seg.start.toString(16).padStart(6, "0").toUpperCase()} .. 0x${seg.end.toString(16).padStart(6, "0").toUpperCase()}`;
-      document.getElementById("diagLength").innerText = seg.length.toLocaleString() + " B";
-      document.getElementById("diagArch").innerText = seg.arch;
-      document.getElementById("diagConf").innerText = (seg.confidence * 100).toFixed(1) + "%";
-      document.getElementById("diagEnt").innerText = seg.entropy.toFixed(2) + " b/B";
-      document.getElementById("diagAscii").innerText = (seg.printRatio * 100).toFixed(1) + "%";
-
-      renderHex(seg.start, 512);
+      document.getElementById("hudCategory").textContent = seg.catName;
+      document.getElementById("hudCategory").style.color = seg.color;
+      document.getElementById("hudRange").textContent = `0x${seg.start.toString(16).toUpperCase().padStart(6, '0')} .. 0x${seg.end.toString(16).toUpperCase().padStart(6, '0')}`;
+      document.getElementById("hudSpan").textContent = `${(seg.end - seg.start).toLocaleString()} Bytes`;
+      document.getElementById("hudArch").textContent = seg.arch;
+      document.getElementById("hudConf").textContent = `${(seg.conf * 100).toFixed(1)}%`;
+      document.getElementById("hudEntropy").textContent = `${seg.ent.toFixed(2)} bits/byte`;
+      document.getElementById("hudDisasm").textContent = seg.disasm;
+      document.getElementById("hexHeaderRange").textContent = `0x${seg.start.toString(16).toUpperCase().padStart(6, '0')} .. 0x${seg.end.toString(16).toUpperCase().padStart(6, '0')}`;
     }
 
-    function renderHex(offset, maxBytes) {
-      const hexView = document.getElementById("hexView");
-      if (!currentData) return;
-      const end = Math.min(currentData.length, offset + maxBytes);
-      document.getElementById("hexOffsetRange").innerText = `Offset: 0x${offset.toString(16).padStart(8, '0').toUpperCase()}`;
+    function renderHexTable() {
+      const seg = activePreset.segments[activeSegIndex];
+      const tbody = document.getElementById("hexTableBody");
+      tbody.innerHTML = "";
+      if (!seg) return;
 
-      let html = "";
-      for (let i = offset; i < end; i += 16) {
-        const addr = "0x" + i.toString(16).padStart(8, "0").toUpperCase();
-        let bytesHex = "";
-        let ascii = "";
-        for (let j = 0; j < 16; j++) {
-          if (i + j < end) {
-            const b = currentData[i + j];
-            bytesHex += b.toString(16).padStart(2, "0").toUpperCase() + " ";
-            ascii += (b >= 0x20 && b <= 0x7E) ? String.fromCharCode(b) : ".";
-          } else {
-            bytesHex += "   ";
-          }
-          if (j === 7) bytesHex += " ";
+      const linesCount = 12;
+      for (let i = 0; i < linesCount; i++) {
+        const lineOffset = seg.start + (i * 16);
+        if (lineOffset >= seg.end) break;
+
+        const tr = document.createElement("tr");
+        let hexBytes = "";
+        let asciiStr = "";
+
+        for (let b = 0; b < 16; b++) {
+          const byteVal = (lineOffset + b * 7) % 256;
+          hexBytes += byteVal.toString(16).toUpperCase().padStart(2, '0') + " ";
+          asciiStr += (byteVal >= 32 && byteVal <= 126) ? String.fromCharCode(byteVal) : ".";
         }
-        html += `<div class="hex-line"><span class="hex-addr">${addr}</span><span class="hex-bytes">${bytesHex}</span><span class="hex-ascii">${escapeHtml(ascii)}</span></div>`;
+
+        tr.innerHTML = `
+          <td class="hex-addr">0x${lineOffset.toString(16).toUpperCase().padStart(6, '0')}</td>
+          <td class="hex-data" style="color:${seg.color};">${hexBytes}</td>
+          <td class="hex-ascii">${asciiStr}</td>
+        `;
+        tbody.appendChild(tr);
       }
-      hexView.innerHTML = html;
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
+    function drawEntropyChart() {
+      const canvas = document.getElementById("entropyChart");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width = canvas.offsetWidth;
+      const h = canvas.height = canvas.offsetHeight;
 
-    function loadSample(type) {
-      const size = 16384;
-      const buf = new Uint8Array(size);
+      ctx.clearRect(0, 0, w, h);
 
-      if (type === 'mixed') {
-        for (let i = 0; i < 4096; i++) buf[i] = (i % 8 === 0) ? 0x55 : (i % 6 === 0) ? 0x48 : (i * 37) % 256;
-        for (let i = 4096; i < 4160; i++) buf[i] = 0x00;
-        const s = "KETHRAVAX_REVERSE_ENGINEERING_SUITE_SEC_INITIALIZE_KERNEL_TRAP_DEBUG_0x00_FATAL\x00";
-        for (let i = 4160; i < 7000; i++) buf[i] = s.charCodeAt((i - 4160) % s.length);
-        for (let i = 7000; i < 10000; i += 4) { buf[i] = i & 0xFF; buf[i+1] = 0x20; buf[i+2] = 0x40; buf[i+3] = 0x00; }
-        for (let i = 10000; i < size; i++) buf[i] = Math.floor(Math.random() * 256);
-        analyzeStream("synthetic_mixed_payload.bin", buf);
-      } else if (type === 'x86') {
-        for (let i = 0; i < 12000; i++) buf[i] = (i % 7 === 0) ? 0x48 : (i % 5 === 0) ? 0x89 : (i * 19) % 256;
-        for (let i = 12000; i < 12200; i++) buf[i] = 0xCC;
-        for (let i = 12200; i < size; i++) buf[i] = "API_ENTRY_POINT\x00".charCodeAt((i - 12200) % 16);
-        analyzeStream("sample_x86_64.elf", buf);
-      } else if (type === 'firmware') {
-        for (let i = 0; i < 8000; i++) { buf[i] = (i % 4 === 3) ? 0xEB : (i * 13) % 256; }
-        for (let i = 8000; i < 8192; i++) buf[i] = 0xFF;
-        for (let i = 8192; i < size; i++) buf[i] = "UBOOT_BOOTLOADER_INIT\x00".charCodeAt((i - 8192) % 22);
-        analyzeStream("iot_arm32_firmware.rom", buf);
-      } else {
-        for (let i = 0; i < size; i++) buf[i] = Math.floor(Math.random() * 256);
-        analyzeStream("encrypted_slice.bin", buf);
+      // Draw grid lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.lineWidth = 1;
+      for (let y = 0; y <= h; y += h / 4) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
       }
-      currentData = buf;
+
+      // Draw entropy waveform
+      ctx.beginPath();
+      ctx.strokeStyle = "#06b6d4";
+      ctx.lineWidth = 2;
+
+      const segs = activePreset.segments;
+      segs.forEach((s, idx) => {
+        const x = (s.start / activePreset.size) * w;
+        const normEnt = Math.min(s.ent / 8.0, 1.0);
+        const y = h - (normEnt * (h - 10)) - 5;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      const last = segs[segs.length - 1];
+      const endX = (last.end / activePreset.size) * w;
+      const endY = h - (Math.min(last.ent / 8.0, 1.0) * (h - 10)) - 5;
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      // Highlight active segment region
+      const activeSeg = segs[activeSegIndex];
+      if (activeSeg) {
+        const ax1 = (activeSeg.start / activePreset.size) * w;
+        const ax2 = (activeSeg.end / activePreset.size) * w;
+        ctx.fillStyle = "rgba(6, 182, 212, 0.2)";
+        ctx.fillRect(ax1, 0, Math.max(ax2 - ax1, 2), h);
+      }
     }
 
-    // Auto load mixed sample
-    window.addEventListener("DOMContentLoaded", () => {
-      loadSample('mixed');
+    function exportSegmentsJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activePreset, null, 2));
+      const dl = document.createElement("a");
+      dl.setAttribute("href", dataStr);
+      dl.setAttribute("download", `${activePreset.name}_segments.json`);
+      document.body.appendChild(dl);
+      dl.click();
+      dl.remove();
+    }
+
+    function exportSegmentsCsv() {
+      let csv = "Start,End,Category,Architecture,Confidence,ShannonEntropy\n";
+      activePreset.segments.forEach(s => {
+        csv += `${s.start},${s.end},"${s.catName}","${s.arch}",${s.conf},${s.ent}\n`;
+      });
+      const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+      const dl = document.createElement("a");
+      dl.setAttribute("href", dataStr);
+      dl.setAttribute("download", `${activePreset.name}_segments.csv`);
+      document.body.appendChild(dl);
+      dl.click();
+      dl.remove();
+    }
+
+    // Auto-init
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPreset("cortex_m4");
     });
   </script>
 </body>

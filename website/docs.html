@@ -14,24 +14,28 @@
 <body>
 
   <!-- Site Header -->
+    <!-- Site Header -->
   <header class="site-header">
     <div class="nav-container">
       <a href="index.html" class="brand">
-        <img src="favicon.svg" alt="KETHRAVAX Logo">
+        <img src="favicon.svg" alt="KETHRAVAX Logo" width="30" height="30">
         <span>KETHRAVAX</span>
-        <span class="brand-badge">DOCS</span>
+        <span class="brand-badge">v0.1.0</span>
       </a>
-      <nav class="nav-menu">
+      <nav class="nav-menu" aria-label="Main Navigation">
         <a href="index.html">Home</a>
         <a href="features.html">Features</a>
         <a href="benchmarks.html">Benchmarks</a>
+        <a href="how-it-works.html">How It Works</a>
         <a href="docs.html" class="active">Docs</a>
         <a href="about.html">About</a>
         <a href="changelog.html">Changelog</a>
-        <a href="explorer/index.html" target="_blank" style="color:var(--accent); font-weight:700;">⚡ Explorer</a>
-        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn-github">GitHub ↗</a>
-        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+        <a href="explorer/index.html" style="color:var(--cyan); font-weight:700;" target="_blank" rel="noopener">⚡ Explorer</a>
       </nav>
+      <div class="nav-actions">
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">GitHub ↗</a>
+        <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
+      </div>
     </div>
   </header>
 
@@ -87,11 +91,67 @@ result = segmenter.analyze_bytes(raw_bytes)<br><br>
   </main>
 
   <!-- Site Footer -->
+    <!-- Site Footer -->
   <footer class="site-footer">
     <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand">
+            <img src="favicon.svg" alt="KETHRAVAX Logo" width="28" height="28">
+            <span>KETHRAVAX</span>
+          </a>
+          <p>
+            Precision multi-class structural byte segmentation and ISA discovery for raw, headerless binary streams.
+          </p>
+          <p style="margin-top:0.75rem; color:var(--text-dim); font-size:0.8rem;">
+            Designed &amp; Maintained by <strong>Arin Goel</strong>.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="benchmarks.html">Benchmarks</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="explorer/index.html">Binary Explorer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Research &amp; Specs</h4>
+          <ul>
+            <li><a href="research.html">Research Paper</a></li>
+            <li><a href="benchmarks.html">KethraCorpus Benchmark</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture RFC</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/LABEL_TAXONOMY.md" target="_blank" rel="noopener">Taxonomy Spec</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Open Source</h4>
+          <ul>
+            <li><a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener">GitHub Repository</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/issues" target="_blank" rel="noopener">Issue Tracker</a></li>
+            <li><a href="feedback.html">Submit Feedback</a></li>
+            <li><a href="privacy.html">Privacy Pledge</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0 License</a></li>
+          </ul>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        <div>Copyright &copy; 2026 Arin Goel. All rights reserved. Released under Apache-2.0 License.</div>
-        <div style="font-family:var(--font-mono); font-size:0.75rem;">KETHRAVAX DOCS</div>
+        <div>
+          &copy; 2026 Arin Goel. Released under the Apache-2.0 License.
+        </div>
+        <div style="display:flex; gap:1.25rem;">
+          <a href="privacy.html" style="color:var(--text-dim); text-decoration:none;">Privacy</a>
+          <a href="docs.html" style="color:var(--text-dim); text-decoration:none;">Docs</a>
+          <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" style="color:var(--text-dim); text-decoration:none;">GitHub</a>
+        </div>
       </div>
     </div>
   </footer>
