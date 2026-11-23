@@ -416,6 +416,7 @@ header.site-header {
   text-align: left;
 }
 
+.hero-showcase-header,
 .showcase-header {
   background: #090e1a;
   padding: 0.75rem 1.25rem;
@@ -423,6 +424,56 @@ header.site-header {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
+}
+
+.hero-showcase-title,
+.showcase-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.hero-showcase-media {
+  position: relative;
+  width: 100%;
+  background: #080c16;
+  display: block;
+}
+
+.hero-showcase-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-showcase-caption {
+  background: #090e1a;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Architecture Hero Diagram */
+.diagram-hero-wrap {
+  margin: 2rem 0 3rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.diagram-hero-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .window-dots {
@@ -802,6 +853,24 @@ header.site-header {
   justify-content: center;
 }
 
+.tour-card-img-wrap {
+  background: #070a12;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.tour-card-img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.tour-card:hover .tour-card-img-wrap img {
+  transform: scale(1.02);
+}
+
+.tour-card-body,
 .tour-content {
   padding: 1.5rem;
   flex: 1;
@@ -809,6 +878,17 @@ header.site-header {
   flex-direction: column;
 }
 
+.tour-card-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.tour-card-body h3,
 .tour-content h3 {
   font-size: 1.15rem;
   font-weight: 700;
@@ -816,6 +896,7 @@ header.site-header {
   color: var(--text-main);
 }
 
+.tour-card-body p,
 .tour-content p {
   color: var(--text-muted);
   font-size: 0.9rem;

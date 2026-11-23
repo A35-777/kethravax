@@ -7,6 +7,19 @@
   <meta name="description" content="Technical mechanics of learned multi-class structural byte-stream segmentation and architecture discovery.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kethravax.pages.dev/how-it-works.html">
+  <meta property="og:title" content="How It Works — KETHRAVAX Neural Architecture">
+  <meta property="og:description" content="Technical mechanics of learned multi-class structural byte-stream segmentation and exact 0-byte boundary snapping.">
+  <meta property="og:image" content="https://kethravax.pages.dev/img/og-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How It Works — KETHRAVAX Neural Architecture">
+  <meta name="twitter:description" content="Deep structural deconvolution of uncontainerized binary streams using dilated convolutions and boundary discontinuity heads.">
+  <meta name="twitter:image" content="https://kethravax.pages.dev/img/og-preview.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +27,6 @@
 <body>
 
   <!-- Site Header -->
-    <!-- Site Header -->
   <header class="site-header">
     <div class="nav-container">
       <a href="index.html" class="brand">
@@ -44,9 +56,14 @@
     <h1 class="hero-title" style="text-align:left; font-size:2.75rem; margin-bottom:1rem;">
       How Structural Byte Segmentation Works
     </h1>
-    <p class="hero-subtitle" style="text-align:left; margin:0 0 3rem 0;">
+    <p class="hero-subtitle" style="text-align:left; margin:0 0 2rem 0;">
       Deconstructing headerless binary streams through multiscale convolutional representations, bidirectional recurrent context, and dual-head boundary snapping.
     </p>
+
+    <!-- Architecture Diagram Hero Media -->
+    <div class="diagram-hero-wrap">
+      <img src="img/architecture-diagram.png" alt="KETHRAVAX Dual-Head Neural & Statistical Binary Segmentation Architecture" width="1280" height="720">
+    </div>
 
     <!-- Step 1 -->
     <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2rem;">
@@ -87,14 +104,16 @@
     <!-- Step 4 -->
     <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem;">
       <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.75rem; color:var(--purple);">4. Exact Boundary Snapping &amp; Decoding</h3>
-      <p style="color:var(--text-muted); line-height:1.7;">
+      <p style="color:var(--text-muted); line-height:1.7; margin-bottom:1.5rem;">
         KETHRAVAX eliminates neural window jitter (&plusmn;64 bytes) via a dedicated Boundary Head paired with an exact Local Gradient Snapper. The decoder scans local byte discontinuities (null runs, ASCII transitions, 4/8/16-byte machine alignment) to lock segment boundaries to exact byte offsets.
       </p>
+      <div style="border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);">
+        <img src="img/tour-snapper.png" alt="0-Byte Boundary Snapper Comparison" style="width:100%; height:auto; display:block;">
+      </div>
     </div>
   </main>
 
   <!-- Site Footer -->
-    <!-- Site Footer -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
