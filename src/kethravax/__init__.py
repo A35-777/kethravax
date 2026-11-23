@@ -19,7 +19,7 @@ from kethravax.core.types import (
 from kethravax.inference.engine import BinarySegmenter
 
 __version__ = "0.1.0"
-__author__ = "Kethravax Open Source AI Team"
+__author__ = "Arin Goel"
 
 __all__ = [
     "BinarySegmenter",

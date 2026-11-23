@@ -25,3 +25,4 @@ exp_content = exp_content.replace("https://github.com/kethravax/kethravax", "htt
 exp_content = exp_content.replace("../website/index.html", "../index.html")
 explorer_html.write_text(exp_content, encoding="utf-8")
 print("Updated website/explorer/index.html")
+
