@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KETHRAVAX — Precision Structural Byte Segmentation for Raw Binary Streams</title>
-  <meta name="description" content="A learned neural and statistical system for multi-class structural segmentation and ISA discovery across raw, headerless binary byte streams. Reverse engineer firmware, ROMs, and shellcode with exact 0-byte boundary snapping.">
-  <meta name="keywords" content="binary analysis, firmware reverse engineering, structural segmentation, ISA detection, byte-level neural network, headerless disassembly, security research, Arin Goel">
+  <meta name="description"
+    content="A learned neural and statistical system for multi-class structural segmentation and ISA discovery across raw, headerless binary byte streams. Reverse engineer firmware, ROMs, and shellcode with exact 0-byte boundary snapping.">
+  <meta name="keywords"
+    content="binary analysis, firmware reverse engineering, structural segmentation, ISA detection, byte-level neural network, headerless disassembly, security research, Arin Goel">
   <meta name="author" content="Arin Goel">
   <link rel="canonical" href="https://kethravax.pages.dev/">
-  
+
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://kethravax.pages.dev/">
   <meta property="og:title" content="KETHRAVAX — Precision Structural Byte Segmentation">
-  <meta property="og:description" content="Deconstruct raw binary streams without ELF, PE, or Mach-O headers. Powered by KethraSeg-Hybrid (48,256 params) on CPU.">
+  <meta property="og:description"
+    content="Deconstruct raw binary streams without ELF, PE, or Mach-O headers. Powered by KethraSeg-Hybrid (48,256 params) on CPU.">
   <meta property="og:image" content="https://kethravax.pages.dev/img/og-preview.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -21,11 +25,100 @@
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="KETHRAVAX — Precision Structural Byte Segmentation">
-  <meta name="twitter:description" content="Multi-class structural segmentation and ISA discovery for raw binary byte streams on CPU. 100% offline.">
+  <meta name="twitter:description"
+    content="Multi-class structural segmentation and ISA discovery for raw binary byte streams on CPU. 100% offline.">
   <meta name="twitter:image" content="https://kethravax.pages.dev/img/og-preview.png">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-card: #0d1527;
+      --bg-card-hover: #121c33;
+      --bg-code: #050810;
+      --border: #1e293b;
+      --border-focus: #06b6d4;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.18);
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --cat-code: #06b6d4;
+      --cat-string: #f59e0b;
+      --cat-table: #10b981;
+      --cat-raw: #3b82f6;
+      --cat-padding: #64748b;
+      --cat-opaque: #8b5cf6;
+      --cat-unknown: #f43f5e;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --container-width: 1240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; min-height: 100vh; }
+    header.site-header { background: rgba(7, 11, 20, 0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+    .nav-container { max-width: var(--container-width); margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 0.65rem; color: var(--text-main); text-decoration: none; font-weight: 800; font-size: 1.25rem; }
+    .brand-badge { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 9999px; }
+    nav.nav-menu { display: flex; gap: 1.5rem; align-items: center; }
+    nav.nav-menu a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.15s ease; }
+    nav.nav-menu a:hover, nav.nav-menu a.active { color: var(--cyan); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; padding: 0.65rem 1.35rem; border-radius: 6px; text-decoration: none; cursor: pointer; transition: all 0.2s ease; border: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: #fff; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25); }
+    .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
+    .container { max-width: var(--container-width); margin: 0 auto; padding: 3rem 1.5rem; }
+    .hero-section { text-align: center; padding: 3rem 1.5rem 2rem; background: radial-gradient(circle at 50% 15%, rgba(6, 182, 212, 0.1) 0%, transparent 65%); }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(13, 21, 39, 0.85); border: 1px solid var(--border); padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; color: var(--cyan); margin-bottom: 1.5rem; }
+    .hero-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+    .hero-title { font-size: 3.25rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.25rem; color: #fff; }
+    .gradient-text { background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 780px; margin: 0 auto 2rem; line-height: 1.6; }
+    .hero-actions { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .trust-strip { display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .trust-item { display: inline-flex; align-items: center; gap: 0.45rem; background: var(--bg-card); border: 1px solid var(--border); padding: 0.45rem 0.95rem; border-radius: var(--radius-sm); font-size: 0.825rem; font-weight: 600; color: var(--text-main); }
+    .trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); }
+    .hero-showcase { max-width: 1040px; margin: 0 auto 3rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6); text-align: left; }
+    .hero-showcase-header { background: #090e1a; padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .hero-showcase-title { font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-mono); }
+    .hero-showcase-media { position: relative; width: 100%; background: #080c16; display: block; }
+    .hero-showcase-media img { width: 100%; height: auto; display: block; }
+    .hero-showcase-caption { background: #090e1a; padding: 0.85rem 1.25rem; border-top: 1px solid var(--border); font-size: 0.825rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .terminal-window { max-width: 1040px; margin: 0 auto 3rem; background: var(--bg-code); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); text-align: left; }
+    .terminal-header { background: #0b1020; padding: 0.65rem 1.25rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+    .terminal-title { font-size: 0.78rem; color: var(--text-dim); font-family: var(--font-mono); margin-left: 0.5rem; }
+    .terminal-body { padding: 1.25rem; font-family: var(--font-mono); font-size: 0.825rem; line-height: 1.6; color: #cbd5e1; white-space: pre-wrap; overflow-x: auto; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .dot-red { background: #ef4444; } .dot-yellow { background: #f59e0b; } .dot-green { background: #10b981; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.75rem; transition: all 0.2s ease; }
+    .card:hover { transform: translateY(-3px); border-color: var(--cyan); }
+    .card-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.65rem; color: var(--text-main); }
+    .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .card-tag { display: inline-block; font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--cyan); margin-top: 1rem; }
+    .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .tour-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, border-color 0.2s ease; }
+    .tour-card:hover { transform: translateY(-3px); border-color: var(--cyan); }
+    .tour-card-img-wrap { background: #070a12; border-bottom: 1px solid var(--border); overflow: hidden; }
+    .tour-card-img-wrap img { width: 100%; height: auto; display: block; }
+    .tour-card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .tour-card-tag { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--cyan); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .tour-card-body h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); }
+    .tour-card-body p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .tour-bullets { list-style: none; margin-top: auto; padding-top: 0.75rem; }
+    .tour-bullets li { font-size: 0.85rem; color: var(--text-dim); padding: 0.25rem 0; display: flex; align-items: center; gap: 0.5rem; }
+    .tour-bullets li::before { content: "✔"; color: var(--cyan); font-size: 0.8rem; }
+  </style>
 
   <!-- Schema.org SoftwareApplication JSON-LD -->
   <script type="application/ld+json">
@@ -50,6 +143,7 @@
   }
   </script>
 </head>
+
 <body>
 
   <!-- Site Header -->
@@ -68,10 +162,12 @@
         <a href="docs.html">Docs</a>
         <a href="about.html">About</a>
         <a href="changelog.html">Changelog</a>
-        <a href="explorer/index.html" target="_blank" rel="noopener" style="color:var(--cyan); font-weight:700;">⚡ Explorer</a>
+        <a href="explorer/index.html" target="_blank" rel="noopener" style="color:var(--cyan); font-weight:700;">⚡
+          Explorer</a>
       </nav>
       <div class="nav-actions">
-        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">GitHub ↗</a>
+        <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener"
+          class="btn btn-secondary btn-sm">GitHub ↗</a>
         <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌓</button>
       </div>
     </div>
@@ -85,20 +181,23 @@
           <span class="hero-badge-dot"></span>
           <span>v0.1.0 Public Beta &bull; 100% Offline CPU Inference (48.2K Params)</span>
         </div>
-        
+
         <h1 class="hero-title">
           Deconstruct Raw Binary Streams <br><span class="gradient-text">Without Headers or Containers</span>
         </h1>
-        
+
         <p class="hero-subtitle">
-          Reverse engineer embedded firmware dumps, bare-metal memory slices, and stripped machine code without ELF, PE, or Mach-O metadata. 
+          Reverse engineer embedded firmware dumps, bare-metal memory slices, and stripped machine code without ELF, PE,
+          or Mach-O metadata.
           KETHRAVAX decomposes raw byte streams into exact, contiguous structural segments with calibrated certainty.
         </p>
 
         <div class="hero-actions">
           <a href="#playground" class="btn btn-primary">Try Interactive Playground &darr;</a>
-          <a href="explorer/index.html" class="btn btn-secondary" target="_blank" rel="noopener">⚡ Launch Full Web Explorer</a>
-          <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" class="btn btn-secondary">Explore on GitHub ★</a>
+          <a href="explorer/index.html" class="btn btn-secondary" target="_blank" rel="noopener">⚡ Launch Full Web
+            Explorer</a>
+          <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener"
+            class="btn btn-secondary">Explore on GitHub ★</a>
         </div>
 
         <!-- Trust Badges Row -->
@@ -117,16 +216,22 @@
               <span class="dot dot-red"></span>
               <span class="dot dot-yellow"></span>
               <span class="dot dot-green"></span>
-              <span class="hero-showcase-title">KETHRAVAX Interactive Workbench &bull; cortex_m4_firmware_v2.04.bin</span>
+              <span class="hero-showcase-title">KETHRAVAX Interactive Workbench &bull;
+                cortex_m4_firmware_v2.04.bin</span>
             </div>
-            <span style="font-size: 0.7rem; color: var(--cyan); font-family: var(--font-mono); font-weight:700;">LIVE SCRUBBER</span>
+            <span style="font-size: 0.7rem; color: var(--cyan); font-family: var(--font-mono); font-weight:700;">LIVE
+              SCRUBBER</span>
           </div>
           <div class="hero-showcase-media">
-            <img src="img/studio-preview.gif" alt="KETHRAVAX Interactive Studio scrubbing binary stream with real-time disassembly and entropy plot" width="960" height="540">
+            <img src="img/studio-preview.gif"
+              alt="KETHRAVAX Interactive Studio scrubbing binary stream with real-time disassembly and entropy plot"
+              width="960" height="540">
           </div>
           <div class="hero-showcase-caption">
-            <span><strong>Real-time Binary Scrubber:</strong> Multi-class structural decomposition with exact 0-byte boundary snapping and multi-ISA disassembly.</span>
-            <span style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.75rem;">Model: KethraSeg-Hybrid (48,256 Params | 100% Offline CPU)</span>
+            <span><strong>Real-time Binary Scrubber:</strong> Multi-class structural decomposition with exact 0-byte
+              boundary snapping and multi-ISA disassembly.</span>
+            <span style="color: var(--cyan); font-family: var(--font-mono); font-size: 0.75rem;">Model: KethraSeg-Hybrid
+              (48,256 Params | 100% Offline CPU)</span>
           </div>
         </div>
 
@@ -139,22 +244,24 @@
             <span class="terminal-title">kethravax segment --input router_firmware.bin --arch-detect --calibrate</span>
           </div>
           <div class="terminal-body">
-<span class="cmd-prompt">$ kethravax segment router_firmware.bin --arch-detect --calibrate --format table</span>
-==================================================================================================
-  KETHRAVAX v0.1.0 &bull; STRUCTURAL BYTE STREAM DECOMPOSITION REPORT
-==================================================================================================
-Target: router_firmware.bin | Size: 65,536 Bytes | Model: KethraSeg-Hybrid (48.2K params)
-Calibration: Conformal Temperature Scaling (&tau;=1.042) | CPU Latency: 23.82 ms
---------------------------------------------------------------------------------------------------
-OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    P-VALUE  SHANNON
-[0x000000..0x001A00]     6,656 B  EXECUTABLE_CODE      ARMv7E-M         99.4%    0.001   5.84 b/B
-[0x001A00..0x002200]     2,048 B  EMBEDDED_STRINGS     ASCII / UTF-8    98.9%    0.002   3.42 b/B
-[0x002200..0x002A00]     2,048 B  LOOKUP_TABLE         32-bit Jump      97.1%    0.007   4.15 b/B
-[0x002A00..0x00D800]    44,544 B  EXECUTABLE_CODE      Thumb-2          99.1%    0.001   5.92 b/B
-[0x00D800..0x00F800]     8,192 B  OPAQUE_PAYLOAD       AES Encrypted    99.8%    0.000   7.96 b/B
-[0x00F800..0x010000]     2,048 B  ALIGNMENT_PADDING    Zero-Fill (0x00) 100.0%   0.000   0.00 b/B
---------------------------------------------------------------------------------------------------
-<span style="color:#22c55e; font-weight:bold;">✔ ZERO RESIDUAL BYTES:</span> 100% of input stream assigned contiguous exact non-overlapping spans.
+            <span class="cmd-prompt">$ kethravax segment router_firmware.bin --arch-detect --calibrate --format
+              table</span>
+            ==================================================================================================
+            KETHRAVAX v0.1.0 &bull; STRUCTURAL BYTE STREAM DECOMPOSITION REPORT
+            ==================================================================================================
+            Target: router_firmware.bin | Size: 65,536 Bytes | Model: KethraSeg-Hybrid (48.2K params)
+            Calibration: Conformal Temperature Scaling (&tau;=1.042) | CPU Latency: 23.82 ms
+            --------------------------------------------------------------------------------------------------
+            OFFSET RANGE BYTE SPAN STRUCTURAL CLASS TARGET ISA CONF P-VALUE SHANNON
+            [0x000000..0x001A00] 6,656 B EXECUTABLE_CODE ARMv7E-M 99.4% 0.001 5.84 b/B
+            [0x001A00..0x002200] 2,048 B EMBEDDED_STRINGS ASCII / UTF-8 98.9% 0.002 3.42 b/B
+            [0x002200..0x002A00] 2,048 B LOOKUP_TABLE 32-bit Jump 97.1% 0.007 4.15 b/B
+            [0x002A00..0x00D800] 44,544 B EXECUTABLE_CODE Thumb-2 99.1% 0.001 5.92 b/B
+            [0x00D800..0x00F800] 8,192 B OPAQUE_PAYLOAD AES Encrypted 99.8% 0.000 7.96 b/B
+            [0x00F800..0x010000] 2,048 B ALIGNMENT_PADDING Zero-Fill (0x00) 100.0% 0.000 0.00 b/B
+            --------------------------------------------------------------------------------------------------
+            <span style="color:#22c55e; font-weight:bold;">✔ ZERO RESIDUAL BYTES:</span> 100% of input stream assigned
+            contiguous exact non-overlapping spans.
           </div>
         </div>
 
@@ -186,22 +293,29 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
         <div class="section-header">
           <h2 class="section-title">Interactive Binary Playground</h2>
           <p class="section-subtitle">
-            Experience real-time structural segmentation right in your browser. Choose a real firmware scenario or inspect byte offsets interactively.
+            Experience real-time structural segmentation right in your browser. Choose a real firmware scenario or
+            inspect byte offsets interactively.
           </p>
         </div>
 
         <div class="playground-box">
           <div class="playground-header">
             <div class="preset-group">
-              <span style="font-size:0.8rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; margin-right:0.5rem;">Presets:</span>
-              <button class="preset-btn active" data-preset="cortex_m4" onclick="selectPreset('cortex_m4')">⚡ Cortex-M4 Firmware</button>
-              <button class="preset-btn" data-preset="dual_arch" onclick="selectPreset('dual_arch')">🛡️ Mixed x86_64 + AArch64</button>
-              <button class="preset-btn" data-preset="ransomware" onclick="selectPreset('ransomware')">👾 Stripped Ransomware</button>
-              <button class="preset-btn" data-preset="rtos_image" onclick="selectPreset('rtos_image')">📡 RTOS Kernel Image</button>
+              <span
+                style="font-size:0.8rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; margin-right:0.5rem;">Presets:</span>
+              <button class="preset-btn active" data-preset="cortex_m4" onclick="selectPreset('cortex_m4')">⚡ Cortex-M4
+                Firmware</button>
+              <button class="preset-btn" data-preset="dual_arch" onclick="selectPreset('dual_arch')">🛡️ Mixed x86_64 +
+                AArch64</button>
+              <button class="preset-btn" data-preset="ransomware" onclick="selectPreset('ransomware')">👾 Stripped
+                Ransomware</button>
+              <button class="preset-btn" data-preset="rtos_image" onclick="selectPreset('rtos_image')">📡 RTOS Kernel
+                Image</button>
             </div>
             <div style="display:flex; gap:0.5rem;">
               <button class="btn btn-secondary btn-sm" onclick="exportPlaygroundJson()">⬇ Export JSON</button>
-              <a href="explorer/index.html" class="btn btn-primary btn-sm" target="_blank" rel="noopener">⚡ Open Full Workbench</a>
+              <a href="explorer/index.html" class="btn btn-primary btn-sm" target="_blank" rel="noopener">⚡ Open Full
+                Workbench</a>
             </div>
           </div>
 
@@ -211,22 +325,28 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
               <span id="pgMetaInfo">Loading stream metadata...</span>
               <span>Click any segment bar to inspect diagnostic telemetry</span>
             </div>
-            
+
             <div class="stream-bar" id="pgStreamBar"></div>
 
             <div class="segment-legend">
-              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-code);"></span> Executable Code</div>
-              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-string);"></span> String Literal Pool</div>
-              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-table);"></span> Jump / Reloc Table</div>
-              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-opaque);"></span> High-Entropy Opaque</div>
-              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-padding);"></span> Alignment / Padding</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-code);"></span>
+                Executable Code</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-string);"></span> String
+                Literal Pool</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-table);"></span> Jump /
+                Reloc Table</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-opaque);"></span>
+                High-Entropy Opaque</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:var(--cat-padding);"></span>
+                Alignment / Padding</div>
             </div>
           </div>
 
           <!-- Hex Viewport & Diagnostics -->
           <div class="playground-viewer">
             <div class="hex-viewport">
-              <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; margin-bottom:0.75rem;">
+              <div
+                style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; margin-bottom:0.75rem;">
                 Hex Stream Dump &bull; Disassembly Preview
               </div>
               <table class="hex-stream-table">
@@ -237,7 +357,7 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
             <!-- Diagnostics HUD -->
             <div class="diagnostic-panel">
               <div class="panel-title">Diagnostic Telemetry HUD</div>
-              
+
               <div class="diag-stat-row">
                 <div class="diag-stat-label">Structural Category:</div>
                 <div class="diag-stat-val" id="pgDiagCategory" style="color:var(--cyan);">CODE</div>
@@ -270,7 +390,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
 
               <div class="diag-stat-row" style="border-bottom:none;">
                 <div class="diag-stat-label">Disassembly / Semantic Preview:</div>
-                <div class="diag-stat-val" id="pgDiagDisasm" style="font-size:0.8rem; color:#38bdf8; font-weight:normal;">...</div>
+                <div class="diag-stat-val" id="pgDiagDisasm"
+                  style="font-size:0.8rem; color:#38bdf8; font-weight:normal;">...</div>
               </div>
             </div>
           </div>
@@ -283,7 +404,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
       <div class="section-header">
         <h2 class="section-title">Core Structural Capabilities</h2>
         <p class="section-subtitle">
-          Engineered from first principles to resolve the fundamental von Neumann code/data ambiguity without metadata heuristics.
+          Engineered from first principles to resolve the fundamental von Neumann code/data ambiguity without metadata
+          heuristics.
         </p>
       </div>
 
@@ -292,7 +414,7 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">⚡</div>
           <h3>Headerless Discovery</h3>
           <p>
-            Analyzes raw, uncontainerized byte streams with zero ELF, PE, Mach-O, or boot headers. 
+            Analyzes raw, uncontainerized byte streams with zero ELF, PE, Mach-O, or boot headers.
             Identifies execution vectors directly from byte transition dynamics.
           </p>
           <span class="card-tag">Zero Container Assumptions</span>
@@ -302,7 +424,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">🧬</div>
           <h3>7-Class Taxonomy</h3>
           <p>
-            Disentangles executable instructions, string literal pools, jump tables, structured constants, alignment padding, opaque encrypted regions, and ambiguous bytes.
+            Disentangles executable instructions, string literal pools, jump tables, structured constants, alignment
+            padding, opaque encrypted regions, and ambiguous bytes.
           </p>
           <span class="card-tag">Dense Multi-Class Ground Truth</span>
         </div>
@@ -311,7 +434,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">🔀</div>
           <h3>Mixed-ISA Disentanglement</h3>
           <p>
-            Tracks architecture transitions within a single contiguous binary stream (e.g., ARM32 bootloader jumping into Thumb-2 crypto routine, then loading an x86 diagnostic image).
+            Tracks architecture transitions within a single contiguous binary stream (e.g., ARM32 bootloader jumping
+            into Thumb-2 crypto routine, then loading an x86 diagnostic image).
           </p>
           <span class="card-tag">6 Target Architectures</span>
         </div>
@@ -320,7 +444,7 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">🎯</div>
           <h3>Exact 0-Byte Boundary Snapping</h3>
           <p>
-            Eliminates the 32-byte boundary jitter typical of sliding-window classifiers. 
+            Eliminates the 32-byte boundary jitter typical of sliding-window classifiers.
             Dual-head neural gradients lock boundaries to exact byte positions.
           </p>
           <span class="card-tag">F1 = 0.914 at &tau;=4B</span>
@@ -330,7 +454,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">📐</div>
           <h3>Calibrated Uncertainty</h3>
           <p>
-            Never hallucinates false certainty. Uses conformal risk control to quantify prediction ambiguity and explicitly isolate unclassifiable regions.
+            Never hallucinates false certainty. Uses conformal risk control to quantify prediction ambiguity and
+            explicitly isolate unclassifiable regions.
           </p>
           <span class="card-tag">Conformal Risk Calibration</span>
         </div>
@@ -339,7 +464,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
           <div class="card-icon">💻</div>
           <h3>CPU-Native Efficiency</h3>
           <p>
-            A compact 48,256-parameter neural backbone that executes entirely on standard CPU hardware with zero external API calls or cloud dependencies.
+            A compact 48,256-parameter neural backbone that executes entirely on standard CPU hardware with zero
+            external API calls or cloud dependencies.
           </p>
           <span class="card-tag">23.8 ms / 64 KB</span>
         </div>
@@ -358,13 +484,16 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
       <div class="tour-grid">
         <div class="tour-card">
           <div class="tour-card-img-wrap">
-            <img src="img/tour-snapper.png" alt="Exact 0-Byte Boundary Snapper vs Sliding Window Blur" loading="lazy" width="900" height="450">
+            <img src="img/tour-snapper.png" alt="Exact 0-Byte Boundary Snapper vs Sliding Window Blur" loading="lazy"
+              width="900" height="450">
           </div>
           <div class="tour-card-body">
             <span class="tour-card-tag">Exact Boundary Snapper</span>
             <h3>0-Byte Discontinuity Snapper</h3>
             <p>
-              Sliding-window models smear boundaries across window strides. KETHRAVAX pairs a dilated 1D temporal convolution backbone with a byte-level null discontinuity gradient head to lock boundaries to the exact byte.
+              Sliding-window models smear boundaries across window strides. KETHRAVAX pairs a dilated 1D temporal
+              convolution backbone with a byte-level null discontinuity gradient head to lock boundaries to the exact
+              byte.
             </p>
             <ul class="tour-bullets">
               <li>0-byte boundary alignment on instruction boundaries</li>
@@ -376,13 +505,15 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
 
         <div class="tour-card">
           <div class="tour-card-img-wrap">
-            <img src="img/tour-mixed-isa.png" alt="Mixed-ISA Disentanglement Flow" loading="lazy" width="900" height="450">
+            <img src="img/tour-mixed-isa.png" alt="Mixed-ISA Disentanglement Flow" loading="lazy" width="900"
+              height="450">
           </div>
           <div class="tour-card-body">
             <span class="tour-card-tag">Multi-Architecture</span>
             <h3>Mixed-ISA Disentanglement</h3>
             <p>
-              Modern firmware and polyglot exploits combine multiple instruction sets. KETHRAVAX predicts per-byte architecture probabilities, correctly identifying mode switches without symbol tables.
+              Modern firmware and polyglot exploits combine multiple instruction sets. KETHRAVAX predicts per-byte
+              architecture probabilities, correctly identifying mode switches without symbol tables.
             </p>
             <ul class="tour-bullets">
               <li>ARM32, Thumb-2, AArch64, x86-64, MIPS, RISC-V</li>
@@ -394,13 +525,15 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
 
         <div class="tour-card">
           <div class="tour-card-img-wrap">
-            <img src="img/tour-conformal.png" alt="Conformal Risk Control & Uncertainty Radar" loading="lazy" width="900" height="450">
+            <img src="img/tour-conformal.png" alt="Conformal Risk Control & Uncertainty Radar" loading="lazy"
+              width="900" height="450">
           </div>
           <div class="tour-card-body">
             <span class="tour-card-tag">Statistical Calibration</span>
             <h3>Conformal Risk Control</h3>
             <p>
-              In security analysis, a confident wrong prediction is dangerous. KETHRAVAX outputs finite-sample calibrated prediction sets, guaranteeing user-specified error bounds on opaque or ambiguous regions.
+              In security analysis, a confident wrong prediction is dangerous. KETHRAVAX outputs finite-sample
+              calibrated prediction sets, guaranteeing user-specified error bounds on opaque or ambiguous regions.
             </p>
             <ul class="tour-bullets">
               <li>Temperature-scaled softmax calibration</li>
@@ -417,7 +550,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
       <div class="section-header">
         <h2 class="section-title">Empirical Benchmark Performance</h2>
         <p class="section-subtitle">
-          Evaluated on the independently generated KethraCorpus-v1 test suite across firmware dumps, memory slices, and mixed-architecture streams.
+          Evaluated on the independently generated KethraCorpus-v1 test suite across firmware dumps, memory slices, and
+          mixed-architecture streams.
         </p>
       </div>
 
@@ -490,7 +624,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
       <div class="section-header">
         <h2 class="section-title">Developer Quickstart</h2>
         <p class="section-subtitle">
-          Integrate KETHRAVAX into your reverse-engineering scripts, automated CI firmware audits, or triage pipelines in minutes.
+          Integrate KETHRAVAX into your reverse-engineering scripts, automated CI firmware audits, or triage pipelines
+          in minutes.
         </p>
       </div>
 
@@ -507,7 +642,8 @@ OFFSET RANGE          BYTE SPAN   STRUCTURAL CLASS     TARGET ISA       CONF    
             <span style="color:var(--text-dim);"># Python 3.10+ Integration</span>
             <button class="copy-btn" onclick="copySnippet('code-py', this)">Copy Code</button>
           </div>
-          <pre id="code-py"><span style="color:var(--purple);">import</span> kethravax
+          <pre
+            id="code-py"><span style="color:var(--purple);">import</span> kethravax
 
 <span style="color:var(--text-dim);"># 1. Load the pre-trained KethraSeg-Hybrid model (100% offline, 48.2K params)</span>
 segmenter = kethravax.BinarySegmenter.load_pretrained()
@@ -580,35 +716,45 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
         <details class="faq-item">
           <summary>How does KETHRAVAX differ from Binwalk or Magika?</summary>
           <div class="faq-answer">
-            Binwalk relies primarily on file magic signatures (e.g. gzip headers, squashfs magic) and entropy heuristics. It cannot segment bare-metal code, detect architecture switches, or isolate jump tables. Magika performs whole-file classification rather than byte-level segmentation. KETHRAVAX provides contiguous, dense per-byte structural segmentation with exact 0-byte boundary snapping even when all headers are stripped.
+            Binwalk relies primarily on file magic signatures (e.g. gzip headers, squashfs magic) and entropy
+            heuristics. It cannot segment bare-metal code, detect architecture switches, or isolate jump tables. Magika
+            performs whole-file classification rather than byte-level segmentation. KETHRAVAX provides contiguous, dense
+            per-byte structural segmentation with exact 0-byte boundary snapping even when all headers are stripped.
           </div>
         </details>
 
         <details class="faq-item">
           <summary>Does KETHRAVAX require internet access or send telemetry?</summary>
           <div class="faq-answer">
-            No. KETHRAVAX is 100% offline and zero-telemetry. The model weights (48,256 parameters, 192 KB) are bundled with the software and execute entirely on local CPU. No binary data ever leaves your machine.
+            No. KETHRAVAX is 100% offline and zero-telemetry. The model weights (48,256 parameters, 192 KB) are bundled
+            with the software and execute entirely on local CPU. No binary data ever leaves your machine.
           </div>
         </details>
 
         <details class="faq-item">
           <summary>What architectures are currently identified?</summary>
           <div class="faq-answer">
-            v0.1.0 supports x86-64, ARM32 (ARMv7), Thumb-2 (ARM Cortex-M), AArch64 (ARM64), MIPS32 (Big &amp; Little Endian), and RISC-V (RV32/RV64). The taxonomy also supports polyglot boundaries where multiple architectures appear in the same binary stream.
+            v0.1.0 supports x86-64, ARM32 (ARMv7), Thumb-2 (ARM Cortex-M), AArch64 (ARM64), MIPS32 (Big &amp; Little
+            Endian), and RISC-V (RV32/RV64). The taxonomy also supports polyglot boundaries where multiple architectures
+            appear in the same binary stream.
           </div>
         </details>
 
         <details class="faq-item">
           <summary>Can KETHRAVAX detect code inside encrypted or compressed blobs?</summary>
           <div class="faq-answer">
-            No learned model can reverse strong encryption directly from bytes without keys. KETHRAVAX correctly flags encrypted and compressed regions as <code>OPAQUE_PAYLOAD</code> with calibrated high confidence (entropy &gt; 7.9 bits/byte), rather than hallucinating false code classifications.
+            No learned model can reverse strong encryption directly from bytes without keys. KETHRAVAX correctly flags
+            encrypted and compressed regions as <code>OPAQUE_PAYLOAD</code> with calibrated high confidence (entropy
+            &gt; 7.9 bits/byte), rather than hallucinating false code classifications.
           </div>
         </details>
 
         <details class="faq-item">
           <summary>Can I train custom models on my proprietary firmware corpus?</summary>
           <div class="faq-answer">
-            Yes. The KETHRAVAX repository includes the full dataset generation pipeline, loss functions, and training scripts. You can train specialized models on custom RTOS blobs, DSP architectures, or proprietary microcontrollers.
+            Yes. The KETHRAVAX repository includes the full dataset generation pipeline, loss functions, and training
+            scripts. You can train specialized models on custom RTOS blobs, DSP architectures, or proprietary
+            microcontrollers.
           </div>
         </details>
       </div>
@@ -619,11 +765,14 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
       <div class="cta-banner">
         <h2 class="cta-title">Deconstruct Any Binary in Real-Time</h2>
         <p class="cta-desc">
-          Try the full standalone web explorer, install the Python package, or inspect the open-source codebase on GitHub.
+          Try the full standalone web explorer, install the Python package, or inspect the open-source codebase on
+          GitHub.
         </p>
         <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-          <a href="explorer/index.html" class="btn btn-primary" target="_blank" rel="noopener">⚡ Launch Standalone Web Explorer</a>
-          <a href="https://github.com/A35-777/kethravax" class="btn btn-secondary" target="_blank" rel="noopener">Star on GitHub ★</a>
+          <a href="explorer/index.html" class="btn btn-primary" target="_blank" rel="noopener">⚡ Launch Standalone Web
+            Explorer</a>
+          <a href="https://github.com/A35-777/kethravax" class="btn btn-secondary" target="_blank" rel="noopener">Star
+            on GitHub ★</a>
         </div>
       </div>
     </section>
@@ -664,8 +813,10 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
             <li><a href="research.html">Research Paper</a></li>
             <li><a href="benchmarks.html">KethraCorpus Benchmark</a></li>
             <li><a href="changelog.html">Changelog</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture RFC</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/LABEL_TAXONOMY.md" target="_blank" rel="noopener">Taxonomy Spec</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/ARCHITECTURE.md" target="_blank"
+                rel="noopener">Architecture RFC</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/docs/LABEL_TAXONOMY.md" target="_blank"
+                rel="noopener">Taxonomy Spec</a></li>
           </ul>
         </div>
 
@@ -673,10 +824,12 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
           <h4>Open Source</h4>
           <ul>
             <li><a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener">GitHub Repository</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/issues" target="_blank" rel="noopener">Issue Tracker</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/issues" target="_blank" rel="noopener">Issue Tracker</a>
+            </li>
             <li><a href="feedback.html">Submit Feedback</a></li>
             <li><a href="privacy.html">Privacy Pledge</a></li>
-            <li><a href="https://github.com/A35-777/kethravax/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0 License</a></li>
+            <li><a href="https://github.com/A35-777/kethravax/blob/main/LICENSE" target="_blank"
+                rel="noopener">Apache-2.0 License</a></li>
           </ul>
         </div>
       </div>
@@ -688,7 +841,8 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
         <div style="display:flex; gap:1.25rem;">
           <a href="privacy.html" style="color:var(--text-dim); text-decoration:none;">Privacy</a>
           <a href="docs.html" style="color:var(--text-dim); text-decoration:none;">Docs</a>
-          <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener" style="color:var(--text-dim); text-decoration:none;">GitHub</a>
+          <a href="https://github.com/A35-777/kethravax" target="_blank" rel="noopener"
+            style="color:var(--text-dim); text-decoration:none;">GitHub</a>
         </div>
       </div>
     </div>
@@ -696,4 +850,5 @@ docker run --rm -v $(pwd):/data ghcr.io/a35-777/kethravax:latest \
 
   <script src="app.js"></script>
 </body>
+
 </html>

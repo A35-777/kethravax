@@ -15,15 +15,15 @@ export default {
       pathname = pathname + '.html';
     }
 
-    // Version tag to bust edge cache on new release
-    const upstream = "https://raw.githubusercontent.com/A35-777/kethravax/main/website" + pathname + "?v=20261123-v7";
+    // Clean cache busting version
+    const upstream = "https://raw.githubusercontent.com/A35-777/kethravax/main/website" + pathname + "?v=20261124-v2";
     const cache = caches.default;
     const cacheKey = new Request(upstream, request);
     let response = await cache.match(cacheKey);
 
     if (!response) {
       const originRes = await fetch(upstream, {
-        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Kethravax-Deploy/3.0" }
+        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Kethravax-Deploy/4.0" }
       });
       if (originRes.ok) {
         let contentType = "text/plain";
@@ -37,11 +37,12 @@ export default {
         else if (pathname.endsWith(".txt")) contentType = "text/plain; charset=utf-8";
         else if (pathname.endsWith(".json")) contentType = "application/json; charset=utf-8";
 
-        const headers = new Headers(originRes.headers);
+        // CRITICAL: Construct clean response headers without GitHub Raw's restrictive CSP/sandbox!
+        const headers = new Headers();
         headers.set("Content-Type", contentType);
-        headers.set("Cache-Control", "public, max-age=120, s-maxage=600");
+        headers.set("Cache-Control", "public, max-age=60, s-maxage=300");
         headers.set("X-Content-Type-Options", "nosniff");
-        headers.set("X-Frame-Options", "SAMEORIGIN");
+        headers.set("Access-Control-Allow-Origin", "*");
 
         response = new Response(originRes.body, {
           status: 200,
@@ -49,7 +50,7 @@ export default {
         });
         ctx.waitUntil(cache.put(cacheKey, response.clone()));
       } else {
-        response = new Response("404 Not Found — Kethravax: " + pathname + " (upstream " + originRes.status + ")", {
+        response = new Response("404 Not Found — Kethravax: " + pathname, {
           status: 404,
           headers: { "Content-Type": "text/plain; charset=utf-8" }
         });
