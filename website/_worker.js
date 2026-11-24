@@ -15,15 +15,15 @@ export default {
       pathname = pathname + '.html';
     }
 
-    // Clean cache busting version
-    const upstream = "https://raw.githubusercontent.com/A35-777/kethravax/main/website" + pathname + "?v=20261124-v2";
+    // Clean cache busting upstream fetch
+    const upstream = "https://raw.githubusercontent.com/A35-777/kethravax/main/website" + pathname + "?v=20261124-v6";
     const cache = caches.default;
     const cacheKey = new Request(upstream, request);
     let response = await cache.match(cacheKey);
 
     if (!response) {
       const originRes = await fetch(upstream, {
-        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Kethravax-Deploy/4.0" }
+        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Kethravax-Deploy/6.0" }
       });
       if (originRes.ok) {
         let contentType = "text/plain";
@@ -37,10 +37,9 @@ export default {
         else if (pathname.endsWith(".txt")) contentType = "text/plain; charset=utf-8";
         else if (pathname.endsWith(".json")) contentType = "application/json; charset=utf-8";
 
-        // CRITICAL: Construct clean response headers without GitHub Raw's restrictive CSP/sandbox!
         const headers = new Headers();
         headers.set("Content-Type", contentType);
-        headers.set("Cache-Control", "public, max-age=60, s-maxage=300");
+        headers.set("Cache-Control", pathname.endsWith(".html") ? "public, max-age=0, must-revalidate" : "public, max-age=86400, s-maxage=604800");
         headers.set("X-Content-Type-Options", "nosniff");
         headers.set("Access-Control-Allow-Origin", "*");
 
